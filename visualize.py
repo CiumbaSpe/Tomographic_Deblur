@@ -8,21 +8,21 @@ from utils import (
 )
 
 # load the numpy file
-data1 = np.load('./new_mayo/FBPB/mayo_val/C0020.npy')
-data2 = np.load('./new_mayo/GT/mayo_val/C0020.npy')
-data3 = np.load('./new_mayo/FBPB/mayo_val/C0020.npy')
+data1 = np.load('./new_mayo/FBPB/mayo_val/C016206.npy')
+data2 = np.load('./new_mayo/GT/mayo_val/C016206.npy')
+data3 = np.load('./new_mayo/FBPB/mayo_val/C016206.npy')
 
-data4 = np.load('./new_mayo/FBPB/mayo_val/C0024.npy')
-data5 = np.load('./new_mayo/GT/mayo_val/C0024.npy')
-data6 = np.load('./new_mayo/FBPB/mayo_val/C0024.npy')
+data4 = np.load('./new_mayo/FBPB/mayo_val/C030128.npy')
+data5 = np.load('./new_mayo/GT/mayo_val/C030128.npy')
+data6 = np.load('./new_mayo/FBPB/mayo_val/C030128.npy')
 
-data7 = np.load('./new_mayo/FBPB/mayo_val/C0026.npy')
-data8 = np.load('./new_mayo/GT/mayo_val/C0026.npy')
-data9 = np.load('./new_mayo/FBPB/mayo_val/C0026.npy')
+data7 = np.load('./new_mayo/FBPB/mayo_val/C07732.npy')
+data8 = np.load('./new_mayo/GT/mayo_val/C07732.npy')
+data9 = np.load('./new_mayo/FBPB/mayo_val/C07732.npy')
 
 # load the net weight
 model = UNET(in_channels=1, out_channels=1).to("cuda")
-load_checkpoint(torch.load("try_early_stop.pth.tar"), model)
+load_checkpoint(torch.load("first_big_net_B32.pth.tar"), model)
 
 
 # input = torch.from_numpy(data3).unsqueeze(0).unsqueeze(0).float().to("cuda")

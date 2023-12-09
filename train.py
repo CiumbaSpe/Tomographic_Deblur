@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import albumentations as A
-from albumentations.pytorch import ToTensorV2
+#import albumentations as A
+#from albumentations.pytorch import ToTensorV2
 from earlyStopping import EarlyStopping
 from model import UNET
 from tqdm import tqdm
@@ -16,9 +16,9 @@ from utils import (
 
 LEARNING_RATE = 1e-4
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-BATCH_SIZE = 4
-NUM_EPOCHS = 100
-NUM_WORKERS = 2
+BATCH_SIZE = 16
+NUM_EPOCHS = 4
+NUM_WORKERS = 1
 TRAIN_DIR_X = 'new_mayo/FBPB/mayo_train/'
 TRAIN_DIR_Y = 'new_mayo/GT/mayo_train/'
 VAL_DIR_X = 'new_mayo/FBPB/mayo_val/'
@@ -75,6 +75,7 @@ def train(loader, val_loader, model, optimizer, loss_fn, scaler, es):
 
 def main():
     
+    print(DEVICE)
     # This flag allows you to enable the inbuilt cudnn auto-tuner to find the best algorithm to use for your hardware.
     torch.backends.cudnn.benchmark =  True
     torch.backends.cudnn.enabled =  True
@@ -131,7 +132,7 @@ def main():
         "state_dict": model.state_dict(),
         "optimizer": optimizer.state_dict(),
     }
-    save_checkpoint(checkpoint, "try_early_stop.pth.tar")
+    save_checkpoint(checkpoint, "first_big_net_B32.pth.tar")
 
 if __name__ == "__main__":
     main()

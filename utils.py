@@ -18,7 +18,7 @@ def get_loaders(
     batch_size,
     # train_transform,
     # val_transform,
-    num_workers=4,
+    num_workers=1,
     pin_memory=True,
 ):
     train_ds = MayoDataset(
