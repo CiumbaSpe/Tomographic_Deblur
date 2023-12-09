@@ -8,17 +8,17 @@ from utils import (
 )
 
 # load the numpy file
-data1 = np.load('./new_mayo/FBPB/mayo_val/C016206.npy')
-data2 = np.load('./new_mayo/GT/mayo_val/C016206.npy')
-data3 = np.load('./new_mayo/FBPB/mayo_val/C016206.npy')
+data1 = np.load('./new_mayo/FBPB/mayo_test/C016206.npy')
+data2 = np.load('./new_mayo/GT/mayo_test/C016206.npy')
+data3 = np.load('./new_mayo/FBPB/mayo_test/C016206.npy')
 
-data4 = np.load('./new_mayo/FBPB/mayo_val/C030128.npy')
-data5 = np.load('./new_mayo/GT/mayo_val/C030128.npy')
-data6 = np.load('./new_mayo/FBPB/mayo_val/C030128.npy')
+data4 = np.load('./new_mayo/FBPB/mayo_test/C030128.npy')
+data5 = np.load('./new_mayo/GT/mayo_test/C030128.npy')
+data6 = np.load('./new_mayo/FBPB/mayo_test/C030128.npy')
 
-data7 = np.load('./new_mayo/FBPB/mayo_val/C07732.npy')
-data8 = np.load('./new_mayo/GT/mayo_val/C07732.npy')
-data9 = np.load('./new_mayo/FBPB/mayo_val/C07732.npy')
+data7 = np.load('./new_mayo/FBPB/mayo_test/C07732.npy')
+data8 = np.load('./new_mayo/GT/mayo_test/C07732.npy')
+data9 = np.load('./new_mayo/FBPB/mayo_test/C07732.npy')
 
 # load the net weight
 model = UNET(in_channels=1, out_channels=1).to("cuda")
