@@ -11,7 +11,7 @@ CHECKPOINT = "long_train_B16.pth.tar"
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
  
 # cosa vuoi testare
-DATA = "mayo_val"
+DATA = "mayo_test"
 
 GT_dir = "./new_mayo/GT/" + DATA
 FBPB_dir = "./new_mayo/FBPB/" + DATA
@@ -49,6 +49,7 @@ for i, j in zip(os.listdir(GT_dir), os.listdir(FBPB_dir)):
     preds = pred_image(corrupt)
 
     mse_pred += mean_squared_error(ground_truth, preds)
+    print(mse_corrupted)
 
 
 print("average mse for corrupted in dataset " + DATA + " = ", mse_corrupted/n)
