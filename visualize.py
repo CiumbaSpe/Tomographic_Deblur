@@ -7,6 +7,9 @@ from utils import (
     load_checkpoint,
 )
 
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+CHECKPOINT = "big_long_train_B16.pth.tar"
+
 # load the numpy file
 data1 = np.load('./new_mayo/FBPB/mayo_test/C016206.npy')
 data2 = np.load('./new_mayo/GT/mayo_test/C016206.npy')
@@ -21,9 +24,12 @@ data8 = np.load('./new_mayo/GT/mayo_test/C07732.npy')
 data9 = np.load('./new_mayo/FBPB/mayo_test/C07732.npy')
 
 # load the net weight
-model = UNET(in_channels=1, out_channels=1).to("cuda")
-load_checkpoint(torch.load("first_big_net_B32.pth.tar"), model)
+model = UNET(in_channels=1, out_channels=1).to(DEVICE)
 
+if DEVICE == "cuda":
+    load_checkpoint(torch.load(CHECKPOINT), model)
+else:
+    load_checkpoint(torch.load(CHECKPOINT, map_location=torch.device('cpu')), model)
 
 # input = torch.from_numpy(data3).unsqueeze(0).unsqueeze(0).float().to("cuda")
 # input = torch.unsqueeze(torch.from_numpy(data3), 0).unsqueeze(0).cpu().to("cuda")
@@ -34,9 +40,12 @@ load_checkpoint(torch.load("first_big_net_B32.pth.tar"), model)
 
 def pred_image(image):
     with torch.no_grad(): # does not calculate gradient
-        preds = torch.from_numpy(image).unsqueeze(0).unsqueeze(0).to("cuda")
+        preds = torch.from_numpy(image).unsqueeze(0).unsqueeze(0).to(DEVICE)
         preds_tensor = model(preds)
 
+        #if(DEVICE == "cpu"):
+            #preds_tensor = preds_tensor.squeeze(0).squeeze(0)
+        #else:
         preds_tensor = preds_tensor.squeeze(0).squeeze(0).cpu()
         return preds_tensor.numpy()
 
