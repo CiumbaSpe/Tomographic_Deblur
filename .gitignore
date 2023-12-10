@@ -2,3 +2,4 @@ new_mayo/
 log_train
 script.sbatch
 __pycache__
+risultati.png

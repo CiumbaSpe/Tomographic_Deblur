@@ -134,7 +134,7 @@ def main():
         "state_dict": model.state_dict(),
         "optimizer": optimizer.state_dict(),
     }
-    save_checkpoint(checkpoint, "big_long_train_B16.pth.tar")
+    save_checkpoint(checkpoint, "braun.pth.tar")
 
 if __name__ == "__main__":
     main()
