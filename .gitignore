@@ -3,3 +3,4 @@ log_train
 script.sbatch
 __pycache__
 risultati.png
+file_to_send
