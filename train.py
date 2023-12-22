@@ -19,14 +19,14 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = 16
 NUM_EPOCHS = 1000
 NUM_WORKERS = 1
-TRAIN_DIR_X = 'new_mayo/FBPB/mayo_train/'
-TRAIN_DIR_Y = 'new_mayo/GT/mayo_train/'
-VAL_DIR_X = 'new_mayo/FBPB/mayo_val/'
-VAL_DIR_Y = 'new_mayo/GT/mayo_val/' 
+TRAIN_DIR_X = 'seeTroughDataset/trainIn'
+TRAIN_DIR_Y = 'seeTroughDataset/trainOut'
+# VAL_DIR_X = 'new_mayo/FBPB/mayo_val/'
+# VAL_DIR_Y = 'new_mayo/GT/mayo_val/' 
 
 # TRAIN
 
-def train(loader, val_loader, model, optimizer, loss_fn, scaler, es):
+def train(loader, model, optimizer, loss_fn, scaler, es):
     loop = tqdm(loader) 
     # steps = list(enumerate(loader))
 
@@ -53,26 +53,27 @@ def train(loader, val_loader, model, optimizer, loss_fn, scaler, es):
         # loop.set_description(f"vloss: {vloss:>7f}, {es.status}")
 
     # END OF EPOCH, USE VALIDATE SET TO MONITORIZE OVERFITTING
-    model.eval()
-    cont = 0
-    loss_sum = 0
-    for idx, (x, y) in enumerate(val_loader):
-        x = torch.unsqueeze(x, 1).to(device = DEVICE)
-        y = torch.unsqueeze(y, 1).to(device = DEVICE)
+    # model.eval()
+    # cont = 0
+    # loss_sum = 0
+    # for idx, (x, y) in enumerate(val_loader):
+    #     x = torch.unsqueeze(x, 1).to(device = DEVICE)
+    #     y = torch.unsqueeze(y, 1).to(device = DEVICE)
     
-        with torch.no_grad():
-            preds = model(x)
-            vloss = loss_fn(preds.float(), y.float())
-            # loop.set_description(f"vloss: {vloss:>7f}, {es.status}")
+    #     with torch.no_grad():
+    #         preds = model(x)
+    #         vloss = loss_fn(preds.float(), y.float())
+    #         # loop.set_description(f"vloss: {vloss:>7f}, {es.status}")
 
-        cont += 1
-        loss_sum += vloss.item()
-        loop.set_description(f"vloss media: {loss_sum/cont:>7f}, {es.status}")
+    #     cont += 1
+    #     loss_sum += vloss.item()
+    #     loop.set_description(f"vloss media: {loss_sum/cont:>7f}, {es.status}")
 
     
-    print(loss_sum/cont)
-    if (es(model, loss_sum/cont)):
-        return True
+    # print(loss_sum/cont)
+    # if (es(model, loss_sum/cont)):
+    #     return True
+    # return False
     return False
 
 def main():
@@ -114,11 +115,11 @@ def main():
     es = EarlyStopping()
 
     # train_loader, val_loader = fget_loader...
-    train_loader, val_loader = get_loaders(
+    train_loader = get_loaders(
         TRAIN_DIR_X,
         TRAIN_DIR_Y,
-        VAL_DIR_X,
-        VAL_DIR_Y,
+        # VAL_DIR_X,
+        # VAL_DIR_Y,
         BATCH_SIZE,
         # train_transform
     )
@@ -126,7 +127,7 @@ def main():
     scaler = torch.cuda.amp.GradScaler()
     for epoch in range(NUM_EPOCHS):
         print(f"epoch: ({epoch})")
-        if(train(train_loader, val_loader, model, optimizer, loss_fn, scaler, es)):
+        if(train(train_loader, model, optimizer, loss_fn, scaler, es)):
             break
 
     # Save model
@@ -134,7 +135,7 @@ def main():
         "state_dict": model.state_dict(),
         "optimizer": optimizer.state_dict(),
     }
-    save_checkpoint(checkpoint, "braun.pth.tar")
+    save_checkpoint(checkpoint, "first_seetrough.pth.tar")
 
 if __name__ == "__main__":
     main()

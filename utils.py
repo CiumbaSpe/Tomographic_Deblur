@@ -13,8 +13,8 @@ def load_checkpoint(checkpoint, model):
 def get_loaders(
     train_x,
     train_y,
-    val_x,
-    val_y,
+    # val_x,
+    # val_y,
     batch_size,
     # train_transform,
     # val_transform,
@@ -35,22 +35,22 @@ def get_loaders(
         shuffle=True,
     )
 
-    val_ds = MayoDataset(
-        img_dir_x=val_x,
-        img_dir_y=val_y,
-        # transform=val_transform,
-    )
+    # val_ds = MayoDataset(
+    #     img_dir_x=val_x,
+    #     img_dir_y=val_y,
+    #     # transform=val_transform,
+    # )
 
-    val_loader = DataLoader(
-        val_ds,
-        batch_size=1,
-        num_workers=num_workers,
-        pin_memory=pin_memory,
-        shuffle=False,
-    )
+    # val_loader = DataLoader(
+    #     val_ds,
+    #     batch_size=1,
+    #     num_workers=num_workers,
+    #     pin_memory=pin_memory,
+    #     shuffle=False,
+    # )
 
     # should rerturn val_loader
-    return train_loader, val_loader
+    return train_loader
 
 # def check_accuracy(loader, model, device="cuda"):
 #     num_correct = 0
