@@ -18,8 +18,8 @@ class MayoDataset(Dataset):
         sample_x = os.path.join(self.img_x, self.images[idx])
         target_y = os.path.join(self.img_y, self.images[idx])
 
-        image = np.load(sample_x)
-        target = np.load(target_y)
+        image = np.load(sample_x).astype(np.float32)
+        target = np.load(target_y).astype(np.float32)
 
         if self.transform:
             image = self.transform(image)
