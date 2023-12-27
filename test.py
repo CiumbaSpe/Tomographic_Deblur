@@ -9,15 +9,14 @@ from utils import (
 )
 
 
-CHECKPOINT = "weights/long_train_B16.pth.tar" # default value
+CHECKPOINT = "weights/first_seetrough.pth.tar" # default value
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 MODEL = UNET(in_channels=1, out_channels=1).to(DEVICE) 
 
 # cosa vuoi testare
-DATA = "mayo_test/"
 
-GTDIR = "./new_mayo/GT/" + DATA
-NOISEDIR = "./new_mayo/FBPB/" + DATA
+GTDIR = "./seeTroughDataset/testOut/"
+NOISEDIR = "./seeTroughDataset/testIn/"
 
 def pred_image(image, model):
         model.eval()
@@ -37,8 +36,8 @@ def test(model):
     n = len(os.listdir(GTDIR))
 
     for i in os.listdir(GTDIR):
-        gt = np.load(GTDIR + i)
-        noise = np.load(NOISEDIR + i)
+        gt = np.load(GTDIR + i).astype(np.float32)
+        noise = np.load(NOISEDIR + i).astype(np.float32)
 
         mse_corrupted += mean_squared_error(gt, noise)
 
