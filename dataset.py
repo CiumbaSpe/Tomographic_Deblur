@@ -11,7 +11,7 @@ class MayoDataset(Dataset):
         self.images = os.listdir(img_dir_y)
  
     def __len__(self):
-        # print("THE LEN OF THE DATASET: ", len(self.images), "\n")
+        #print("THE LEN OF THE DATASET: ", len(self.images), "\n")
         return len(self.images)
     
     def __getitem__(self, idx):
@@ -20,6 +20,8 @@ class MayoDataset(Dataset):
 
         image = np.load(sample_x).astype(np.float32)
         target = np.load(target_y).astype(np.float32)
+
+        print(sample_x, "=>", target_y)
 
         if self.transform:
             image = self.transform(image)
