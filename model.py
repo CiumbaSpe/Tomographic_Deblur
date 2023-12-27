@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-# import torchvision.transforms.functional as TF
+import torchvision.transforms.functional as TF
 
 class DoubleConv(nn.Module):
     def __init__(self, in_channels, out_channels):
@@ -60,8 +60,8 @@ class UNET(nn.Module):
             x = self.ups[idx](x)
             skip_connection = skip_connections[idx//2]
 
-            # if x.shape != skip_connection.shape:
-            #    x = TF.resize(x, size=skip_connection.shape[2:])
+            if x.shape != skip_connection.shape:
+               x = TF.resize(x, size=skip_connection.shape[2:])
 
             concat_skip = torch.cat((skip_connection, x), dim=1)
             x = self.ups[idx+1](concat_skip)
@@ -72,7 +72,7 @@ class UNET(nn.Module):
         return x + save_input
 
 def test():
-    x = torch.randn((1, 1, 512, 512))
+    x = torch.randn((1, 1, 836, 836))
     model = UNET(in_channels=1, out_channels=1)
     preds = model(x)
     print(preds.shape)
