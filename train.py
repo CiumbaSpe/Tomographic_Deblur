@@ -17,7 +17,7 @@ from utils import (
 LEARNING_RATE = 1e-4
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = 8
-NUM_EPOCHS = 10
+NUM_EPOCHS = 100
 NUM_WORKERS = 1
 TRAIN_DIR_X = 'seeTroughDataset/trainIn'
 TRAIN_DIR_Y = 'seeTroughDataset/trainOut'
@@ -30,18 +30,14 @@ def train(loader, model, optimizer, loss_fn, scaler):
     loop = tqdm(loader) 
     # steps = list(enumerate(loader))
 
-    model.train()
-
-    print("zio benjamin")
+    # model.train()
 
     # RUNNING TROUGH ALL THE BATCHES
     for batch_idx, (data, targets) in enumerate(loop):
         # print(data.dtype)
         data = torch.unsqueeze(data, 1).to(device = DEVICE)
         targets = torch.unsqueeze(targets, 1).to(device = DEVICE)
-
-        print("braun")
-
+    
         # forward
         with torch.cuda.amp.autocast():
             predictions = model(data)
@@ -139,7 +135,7 @@ def main():
         "state_dict": model.state_dict(),
         "optimizer": optimizer.state_dict(),
     }
-    save_checkpoint(checkpoint, "first_seetrough.pth.tar")
+    save_checkpoint(checkpoint, "long_seetrough.pth.tar")
 
 if __name__ == "__main__":
     main()

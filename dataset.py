@@ -1,6 +1,7 @@
 import os
 from torch.utils.data import Dataset
 import numpy as np
+from sklearn.metrics import mean_squared_error
 
 class MayoDataset(Dataset):
     def __init__(self, img_dir_x, img_dir_y, transform=None, target_transform=None):
@@ -21,7 +22,8 @@ class MayoDataset(Dataset):
         image = np.load(sample_x).astype(np.float32)
         target = np.load(target_y).astype(np.float32)
 
-        print(sample_x, "=>", target_y)
+        print(mean_squared_error(target, image))
+        
 
         if self.transform:
             image = self.transform(image)
