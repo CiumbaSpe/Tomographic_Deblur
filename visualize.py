@@ -11,15 +11,15 @@ from utils import (
 )
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-CHECKPOINT = "weights/big_long_train_B16.pth.tar" # default
+CHECKPOINT = "weights/first_seetrough.pth.tar" # default
 MODEL = UNET(in_channels=1, out_channels=1).to(DEVICE) 
 
 NUM = 3 # default number of image to show
 COLUMN = 3
 
 # test data dir
-GTDIR = "./new_mayo/GT/mayo_test/"
-NOISEDIR = "./new_mayo/FBPB/mayo_test/"
+GTDIR = "./seeTroughDataset/testOut/"
+NOISEDIR = "./seeTroughDataset/testIn/"
 
 
 def pred_image(image, model = MODEL):
@@ -39,8 +39,11 @@ def visualize_image(num = NUM):
 
     for i in range(len(img)):
 
-        gt = np.load(GTDIR + img[i])
-        noise = np.load(NOISEDIR + img[i])
+        print(GTDIR + img[i])
+        print(NOISEDIR + img[i])
+
+        gt = np.load(GTDIR + img[i]).astype(np.float32)
+        noise = np.load(NOISEDIR + img[i]).astype(np.float32)
         pred = pred_image(noise, MODEL)
 
         mse_noise = mean_squared_error(gt, noise)
@@ -66,10 +69,13 @@ def visualize_image(num = NUM):
 
 # load the model and the weights
 def load(checkpoint = CHECKPOINT):
+    print()
     if DEVICE == "cuda":
         load_checkpoint(torch.load(CHECKPOINT), MODEL)
     else:
         load_checkpoint(torch.load(CHECKPOINT, map_location=torch.device('cpu')), MODEL)
+
+
 
 def main():
     
