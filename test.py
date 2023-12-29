@@ -28,6 +28,9 @@ def pred_image(image, model):
             return preds_tensor.numpy()
 
 
+def normalize(img): 
+    return (img - np.min(img)) / (np.max(img) - np.min(img))
+
 def test(model):
 
     mse_corrupted = 0
@@ -36,9 +39,9 @@ def test(model):
     n = len(os.listdir(GTDIR))
 
     for i in os.listdir(GTDIR):
-        gt = np.load(GTDIR + i).astype(np.float32)
-        noise = np.load(NOISEDIR + i).astype(np.float32)
-
+        gt = normalize(np.load(GTDIR + i).astype(np.float32))
+        noise = normalize(np.load(NOISEDIR + i).astype(np.float32))
+        
         mse_corrupted += mean_squared_error(gt, noise)
 
         preds = pred_image(noise, model)
@@ -53,9 +56,9 @@ def test(model):
 # load the model and the weights
 def load(checkpoint = CHECKPOINT):
     if DEVICE == "cuda":
-        load_checkpoint(torch.load(CHECKPOINT), MODEL)
+        load_checkpoint(torch.load(checkpoint), MODEL)
     else:
-        load_checkpoint(torch.load(CHECKPOINT, map_location=torch.device('cpu')), MODEL)
+        load_checkpoint(torch.load(checkpoint, map_location=torch.device('cpu')), MODEL)
 
 
 def main():

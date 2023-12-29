@@ -1,0 +1,8 @@
+please train
+
+dataset
+prova/trainIn
+
+net [64, 128, 256]
+
+

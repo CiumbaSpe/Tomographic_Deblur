@@ -2,6 +2,7 @@ import os
 from torch.utils.data import Dataset
 import numpy as np
 from sklearn.metrics import mean_squared_error
+import torchvision.transforms as TF
 
 class MayoDataset(Dataset):
     def __init__(self, img_dir_x, img_dir_y, transform=None, target_transform=None):
@@ -22,10 +23,13 @@ class MayoDataset(Dataset):
         image = np.load(sample_x).astype(np.float32)
         target = np.load(target_y).astype(np.float32)
 
-
+        # normalize 0-1 
+        x = (image - np.min(image)) / (np.max(image) - np.min(image))
+        y = (target - np.min(target)) / (np.max(target) - np.min(target))
+        
         if self.transform:
             image = self.transform(image)
         if self.target_transform:
             target = self.target_transform(target)
         
-        return image, target
+        return x, y

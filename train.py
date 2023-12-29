@@ -16,11 +16,11 @@ from utils import (
 
 LEARNING_RATE = 1e-4
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-BATCH_SIZE = 8
-NUM_EPOCHS = 200
+BATCH_SIZE = 4
+NUM_EPOCHS = 10
 NUM_WORKERS = 1
-TRAIN_DIR_X = 'seeTroughDataset/trainIn'
-TRAIN_DIR_Y = 'seeTroughDataset/trainOut'
+TRAIN_DIR_X = 'prova/trainIn'
+TRAIN_DIR_Y = 'prova/trainOut'
 # VAL_DIR_X = 'new_mayo/FBPB/mayo_val/'
 # VAL_DIR_Y = 'new_mayo/GT/mayo_val/' 
 
@@ -30,11 +30,12 @@ def train(loader, model, optimizer, loss_fn, scaler):
     loop = tqdm(loader) 
     # steps = list(enumerate(loader))
 
-    # model.train()
+    model.train()
 
     # RUNNING TROUGH ALL THE BATCHES
     for batch_idx, (data, targets) in enumerate(loop):
         # print(data.dtype)
+        # torch.unsqueeze(data, 1).to(device = DEVICE)
         data = torch.unsqueeze(data, 1).to(device = DEVICE)
         targets = torch.unsqueeze(targets, 1).to(device = DEVICE)
     
@@ -109,7 +110,7 @@ def main():
         "state_dict": model.state_dict(),
         "optimizer": optimizer.state_dict(),
     }
-    save_checkpoint(checkpoint, "1000Epoch_seetrough.pth.tar")
+    save_checkpoint(checkpoint, "please_train.pth.tar")
 
 if __name__ == "__main__":
     main()

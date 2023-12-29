@@ -31,6 +31,9 @@ def pred_image(image, model = MODEL):
             preds_tensor = preds_tensor.squeeze(0).squeeze(0).cpu()
             return preds_tensor.numpy() 
 
+def normalize(img):
+    img = (img - np.min(img)) / (np.max(img) - np.min(img))
+
 def visualize_image(num = NUM):
     # pick n images and store in img[]
     img = random.sample(os.listdir(GTDIR), num)
@@ -42,8 +45,8 @@ def visualize_image(num = NUM):
         print(GTDIR + img[i])
         print(NOISEDIR + img[i])
 
-        gt = np.load(GTDIR + img[i]).astype(np.float32)
-        noise = np.load(NOISEDIR + img[i]).astype(np.float32)
+        gt = normalize(np.load(GTDIR + img[i]).astype(np.float32))
+        noise = normalize(np.load(NOISEDIR + img[i]).astype(np.float32))
         pred = pred_image(noise, MODEL)
 
         mse_noise = mean_squared_error(gt, noise)
@@ -71,9 +74,9 @@ def visualize_image(num = NUM):
 def load(checkpoint = CHECKPOINT):
     print()
     if DEVICE == "cuda":
-        load_checkpoint(torch.load(CHECKPOINT), MODEL)
+        load_checkpoint(torch.load(checkpoint), MODEL)
     else:
-        load_checkpoint(torch.load(CHECKPOINT, map_location=torch.device('cpu')), MODEL)
+        load_checkpoint(torch.load(checkpoint, map_location=torch.device('cpu')), MODEL)
 
 
 
