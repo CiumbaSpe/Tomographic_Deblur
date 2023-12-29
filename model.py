@@ -67,6 +67,8 @@ class UNET(nn.Module):
             x = self.ups[idx+1](concat_skip)
 
         x = self.final_conv(x)
+        m = nn.Tanh()
+        x = m(x)
 
         #ritorno input sommato all'output
         return x + save_input

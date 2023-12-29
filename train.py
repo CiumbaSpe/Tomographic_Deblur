@@ -83,32 +83,6 @@ def main():
     torch.backends.cudnn.benchmark =  True
     torch.backends.cudnn.enabled =  True
 
-    # train_transform = A.Compose(
-    #     [
-    #         A.Rotate(limit=35, p=1.0),
-    #         A.HorizontalFlip(p=0.5),
-    #         A.VerticalFlip(p=0.1),
-    #         A.Normalize(
-    #             mean=[0.0, 0.0, 0.0],
-    #             std=[1.0, 1.0, 1.0],
-    #             max_pixel_value=255.0,
-    #         ),
-    #         ToTensorV2(),
-    #     ],
-    # )
-
-    # val_transforms = A.Compose(
-    #     [
-    #         A.Resize(height=IMAGE_HEIGHT, width=IMAGE_WIDTH),
-    #         A.Normalize(
-    #             mean=[0.0, 0.0, 0.0],
-    #             std=[1.0, 1.0, 1.0],
-    #             max_pixel_value=255.0,
-    #         ),
-    #         ToTensorV2(),
-    #     ],
-    # )
-
     model = UNET(in_channels=1, out_channels=1).to(DEVICE)
     loss_fn = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr = LEARNING_RATE)
