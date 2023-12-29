@@ -17,7 +17,7 @@ from utils import (
 LEARNING_RATE = 1e-4
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = 8
-NUM_EPOCHS = 100
+NUM_EPOCHS = 200
 NUM_WORKERS = 1
 TRAIN_DIR_X = 'seeTroughDataset/trainIn'
 TRAIN_DIR_Y = 'seeTroughDataset/trainOut'
@@ -135,7 +135,7 @@ def main():
         "state_dict": model.state_dict(),
         "optimizer": optimizer.state_dict(),
     }
-    save_checkpoint(checkpoint, "long_seetrough.pth.tar")
+    save_checkpoint(checkpoint, "1000Epoch_seetrough.pth.tar")
 
 if __name__ == "__main__":
     main()

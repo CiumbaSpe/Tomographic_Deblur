@@ -22,8 +22,6 @@ class MayoDataset(Dataset):
         image = np.load(sample_x).astype(np.float32)
         target = np.load(target_y).astype(np.float32)
 
-        print(mean_squared_error(target, image))
-        
 
         if self.transform:
             image = self.transform(image)
