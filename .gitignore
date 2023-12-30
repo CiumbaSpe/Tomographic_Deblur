@@ -7,3 +7,5 @@ seeTroughDataset
 prova
 weights
 mayo_weights
+*.pth.tar
+
