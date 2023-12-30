@@ -7,7 +7,7 @@ import sys
 from sklearn.metrics import mean_squared_error
 from model import UNET
 from utils import (
-    load_checkpoint,
+    load_checkpoint, normalize
 )
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -31,8 +31,6 @@ def pred_image(image, model = MODEL):
             preds_tensor = preds_tensor.squeeze(0).squeeze(0).cpu()
             return preds_tensor.numpy() 
 
-def normalize(img):
-    img = (img - np.min(img)) / (np.max(img) - np.min(img))
 
 def visualize_image(num = NUM):
     # pick n images and store in img[]
@@ -47,7 +45,10 @@ def visualize_image(num = NUM):
 
         gt = normalize(np.load(GTDIR + img[i]).astype(np.float32))
         noise = normalize(np.load(NOISEDIR + img[i]).astype(np.float32))
+
         pred = pred_image(noise, MODEL)
+
+
 
         mse_noise = mean_squared_error(gt, noise)
         mse_pred = mean_squared_error(gt, pred)

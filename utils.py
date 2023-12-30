@@ -1,6 +1,7 @@
 import torch
 from dataset import MayoDataset
 from torch.utils.data import DataLoader
+import numpy as np
 
 def save_checkpoint(state, filename="my_checkpoint.pth.tar"):
     print("=> Saving checkpoint")
@@ -10,6 +11,9 @@ def load_checkpoint(checkpoint, model):
     print("=> Loading checkpoint")
     model.load_state_dict(checkpoint["state_dict"])
  
+def normalize(img):
+    return (img - np.min(img)) / (np.max(img) - np.min(img))
+
 def get_loaders(
     train_x,
     train_y,

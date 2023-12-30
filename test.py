@@ -5,7 +5,7 @@ import sys
 from sklearn.metrics import mean_squared_error
 from model import UNET
 from utils import (
-    load_checkpoint,
+    load_checkpoint, normalize
 )
 
 
@@ -27,9 +27,6 @@ def pred_image(image, model):
             preds_tensor = preds_tensor.squeeze(0).squeeze(0).cpu()
             return preds_tensor.numpy()
 
-
-def normalize(img): 
-    return (img - np.min(img)) / (np.max(img) - np.min(img))
 
 def test(model):
 
