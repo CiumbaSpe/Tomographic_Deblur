@@ -12,7 +12,9 @@ def load_checkpoint(checkpoint, model):
     model.load_state_dict(checkpoint["state_dict"])
  
 def normalize(img):
-    return (img - np.min(img)) / (np.max(img) - np.min(img))
+    img = (img - np.min(img)) / (np.max(img) - np.min(img))
+    img = np.nan_to_num(img, 0)
+    return img
 
 def get_loaders(
     train_x,

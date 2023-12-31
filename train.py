@@ -17,7 +17,7 @@ from utils import (
 LEARNING_RATE = 1e-4
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = 4
-NUM_EPOCHS = 10
+NUM_EPOCHS = 100
 NUM_WORKERS = 1
 TRAIN_DIR_X = 'prova/trainIn'
 TRAIN_DIR_Y = 'prova/trainOut'
@@ -110,7 +110,7 @@ def main():
         "state_dict": model.state_dict(),
         "optimizer": optimizer.state_dict(),
     }
-    save_checkpoint(checkpoint, "please_train.pth.tar")
+    save_checkpoint(checkpoint, "please_long_train.pth.tar")
 
 if __name__ == "__main__":
     main()
