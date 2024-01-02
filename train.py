@@ -17,10 +17,10 @@ from utils import (
 LEARNING_RATE = 1e-4
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = 4
-NUM_EPOCHS = 100
+NUM_EPOCHS = 20
 NUM_WORKERS = 1
-TRAIN_DIR_X = 'prova/trainIn'
-TRAIN_DIR_Y = 'prova/trainOut'
+TRAIN_DIR_X = 'undersample_dataset/120_trainIn'
+TRAIN_DIR_Y = 'undersample_dataset/trainOut'
 # VAL_DIR_X = 'new_mayo/FBPB/mayo_val/'
 # VAL_DIR_Y = 'new_mayo/GT/mayo_val/' 
 
@@ -51,30 +51,8 @@ def train(loader, model, optimizer, loss_fn, scaler):
         scaler.update()
 
         loop.set_postfix(loss = loss.item())
-        # loop.set_description(f"vloss: {vloss:>7f}, {es.status}")
-
-    # END OF EPOCH, USE VALIDATE SET TO MONITORIZE OVERFITTING
-    # model.eval()
-    # cont = 0
-    # loss_sum = 0
-    # for idx, (x, y) in enumerate(val_loader):
-    #     x = torch.unsqueeze(x, 1).to(device = DEVICE)
-    #     y = torch.unsqueeze(y, 1).to(device = DEVICE)
     
-    #     with torch.no_grad():
-    #         preds = model(x)
-    #         vloss = loss_fn(preds.float(), y.float())
-    #         # loop.set_description(f"vloss: {vloss:>7f}, {es.status}")
-
-    #     cont += 1
-    #     loss_sum += vloss.item()
-    #     loop.set_description(f"vloss media: {loss_sum/cont:>7f}, {es.status}")
-
     
-    # print(loss_sum/cont)
-    # if (es(model, loss_sum/cont)):
-    #     return True
-    # return False
     return False
 
 def main():
@@ -110,7 +88,7 @@ def main():
         "state_dict": model.state_dict(),
         "optimizer": optimizer.state_dict(),
     }
-    save_checkpoint(checkpoint, "please_long_train.pth.tar")
+    save_checkpoint(checkpoint, "120_first_train.pth.tar")
 
 if __name__ == "__main__":
     main()

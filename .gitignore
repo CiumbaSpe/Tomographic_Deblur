@@ -1,11 +1,10 @@
-new_mayo/
 log_train
-script.sbatch
+test_out
+*.sbatch
 __pycache__
 risultati.png
 seeTroughDataset
 prova
 weights
-mayo_weights
 *.pth.tar
-
+undersample_dataset

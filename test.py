@@ -3,6 +3,8 @@ import torch
 import os
 import sys
 from sklearn.metrics import mean_squared_error
+from skimage.metrics import structural_similarity as ssim
+from skimage.metrics import peak_signal_noise_ratio as psnr
 from model import UNET
 from utils import (
     load_checkpoint, normalize
@@ -32,6 +34,10 @@ def test(model):
 
     mse_corrupted = 0
     mse_pred = 0
+    psnr_corrupted = 0
+    psnr_pred = 0
+    ssim_corrupted = 0
+    ssim_pred = 0
 
     n = len(os.listdir(GTDIR))
 
@@ -40,15 +46,26 @@ def test(model):
         noise = normalize(np.load(NOISEDIR + i).astype(np.float32))
         
         mse_corrupted += mean_squared_error(gt, noise)
+        psnr_corrupted += psnr(gt, noise)
+        ssim_corrupted += ssim(gt, noise, data_range=noise.max() - noise.min())
 
         preds = pred_image(noise, model)
 
         mse_pred += mean_squared_error(gt, preds)
+        psnr_pred += psnr(gt, preds)
+        ssim_pred += ssim(gt, preds, data_range=preds.max() - preds.min())
 
 
 
     print("average mse for corrupted images in dataset " + NOISEDIR + "\n", mse_corrupted/n)
-    print("average mse for deblurred images" + "\n", mse_pred/n)
+    print("average mse for deblurred images\n", mse_pred/n)
+
+    print("average psnr for corrupted images\n", psnr_corrupted/n)
+    print("average psnr for deblurred images\n", psnr_pred/n )
+
+    print("average ssim for corrupted images\n", ssim_corrupted/n)
+    print("average ssim for deblurred images\n", ssim_pred/n )
+
 
 # load the model and the weights
 def load(checkpoint = CHECKPOINT):

@@ -5,6 +5,7 @@ import random
 import os
 import sys
 from sklearn.metrics import mean_squared_error
+from skimage.metrics import structural_similarity as ssim
 from model import UNET
 from utils import (
     load_checkpoint, normalize
@@ -50,17 +51,21 @@ def visualize_image(num = NUM):
 
 
 
-        mse_noise = mean_squared_error(gt, noise)
-        mse_pred = mean_squared_error(gt, pred)
+        #mse_noise = mean_squared_error(gt, noise)
+        #mse_pred = mean_squared_error(gt, pred)
+
+        ssim_noise = ssim(gt, noise, data_range=noise.max() - noise.min())
+        ssim_pred = ssim(gt, pred, data_range=pred.max() - pred.min())
+
 
         axs[i,0].imshow(gt, cmap = 'gray')
         axs[i,0].set_title(img[i])  
         axs[i,1].imshow(noise, cmap = 'gray')
-        axs[i,1].set_title("mse: %f" %mse_noise)
+        axs[i,1].set_title("ssim: %f" %ssim_noise)
         axs[i,2].imshow(pred, cmap = 'gray')
-        axs[i,2].set_title("mse: %f" %mse_pred)
+        axs[i,2].set_title("ssim: %f" %ssim_pred)
 
-        print(f"mse img({img[i]}): ", mse_pred)
+        print(f"ssim img({img[i]}): ", ssim_pred)
         
     for i in range(num):
         for j in range(COLUMN):
