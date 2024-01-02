@@ -19,8 +19,8 @@ NUM = 3 # default number of image to show
 COLUMN = 3
 
 # test data dir
-GTDIR = "./seeTroughDataset/testOut/"
-NOISEDIR = "./seeTroughDataset/testIn/"
+GTDIR = "./undersample_dataset/testOut/"
+NOISEDIR = "./undersample_dataset/120_testIn/"
 
 
 def pred_image(image, model = MODEL):

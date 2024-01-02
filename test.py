@@ -17,8 +17,8 @@ MODEL = UNET(in_channels=1, out_channels=1).to(DEVICE)
 
 # cosa vuoi testare
 
-GTDIR = "./seeTroughDataset/testOut/"
-NOISEDIR = "./seeTroughDataset/testIn/"
+GTDIR = "./undersample_dataset/testOut/"
+NOISEDIR = "./undersample_dataset/120_testIn/"
 
 def pred_image(image, model):
         model.eval()
