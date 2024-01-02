@@ -57,20 +57,33 @@ def visualize_image(num = NUM):
         ssim_noise = ssim(gt, noise, data_range=noise.max() - noise.min())
         ssim_pred = ssim(gt, pred, data_range=pred.max() - pred.min())
 
-
-        axs[i,0].imshow(gt, cmap = 'gray')
-        axs[i,0].set_title(img[i])  
-        axs[i,1].imshow(noise, cmap = 'gray')
-        axs[i,1].set_title("ssim: %f" %ssim_noise)
-        axs[i,2].imshow(pred, cmap = 'gray')
-        axs[i,2].set_title("ssim: %f" %ssim_pred)
+        if(len(img) != 1):
+          axs[i,0].imshow(gt, cmap = 'gray')
+          axs[i,0].set_title(img[i])  
+          axs[i,1].imshow(noise, cmap = 'gray')
+          axs[i,1].set_title("ssim: %f" %ssim_noise)
+          axs[i,2].imshow(pred, cmap = 'gray')
+          axs[i,2].set_title("ssim: %f" %ssim_pred)
+        else:
+          axs[0].imshow(gt, cmap = 'gray')
+          axs[0].set_title(img[i])  
+          axs[1].imshow(noise, cmap = 'gray')
+          axs[1].set_title("ssim: %f" %ssim_noise)
+          axs[2].imshow(pred, cmap = 'gray')
+          axs[2].set_title("ssim: %f" %ssim_pred)
+        
 
         print(f"ssim img({img[i]}): ", ssim_pred)
         
     for i in range(num):
         for j in range(COLUMN):
-            axs[i,j].set_xticks([])
-            axs[i,j].set_yticks([])
+            if(len(img) != 1):
+              axs[i,j].set_xticks([])
+              axs[i,j].set_yticks([])
+            else:
+              axs[j].set_xticks([])
+              axs[j].set_yticks([])
+
 
     plt.savefig("risultati.png")
 
