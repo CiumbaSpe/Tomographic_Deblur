@@ -8,3 +8,4 @@ prova
 weights
 *.pth.tar
 undersample_dataset
+gigadose_dataset
