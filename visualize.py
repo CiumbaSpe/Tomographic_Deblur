@@ -19,8 +19,8 @@ NUM = 3 # default number of image to show
 COLUMN = 3
 
 # test data dir
-GTDIR = "./undersample_dataset/testOut/"
-NOISEDIR = "./undersample_dataset/120_testIn/"
+GTDIR = "./gigadose_dataset/testOut/"
+NOISEDIR = "./gigadose_dataset/testIn/"
 
 
 def pred_image(image, model = MODEL):
@@ -103,8 +103,10 @@ def main():
     
     # check argument 'checkpoint'
     if len(sys.argv) >= 2:
+        print("loading: ", sys.argv[1])
         load(sys.argv[1]) # load checkpoint in argv[1]
     else: 
+        print("loading: ", CHECKPOINT)
         load() # load default const CHECKPOINT
 
     # check argument 'number of images'

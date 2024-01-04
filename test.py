@@ -77,11 +77,13 @@ def load(checkpoint = CHECKPOINT):
 
 def main():
     if len(sys.argv) >= 2:
+        print("loading: ", sys.argv[1])
         load(sys.argv[1])
     else: 
+        print("loading: ", CHECKPOINT)
         load() # load default const CHECKPOINT
 
-    print("testing")
+    print("testing:")
     test(MODEL)
 
     return 0
