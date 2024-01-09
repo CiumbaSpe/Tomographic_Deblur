@@ -17,8 +17,8 @@ MODEL = UNET(in_channels=1, out_channels=1).to(DEVICE)
 
 # cosa vuoi testare
 
-GTDIR = "./gigadose_dataset/testOut/"
-NOISEDIR = "./gigadose_dataset/testIn/"
+GTDIR = "./undersample_dataset/testOut/"
+NOISEDIR = "./undersample_dataset/120_testIn/"
 
 def pred_image(image, model):
         model.eval()
@@ -60,10 +60,10 @@ def test(model):
     print("average mse for corrupted images in dataset " + NOISEDIR + "\n", mse_corrupted/n)
     print("average mse for deblurred images\n", mse_pred/n)
 
-    print("average psnr for corrupted images\n", psnr_corrupted/n)
+    print("\naverage psnr for corrupted images\n", psnr_corrupted/n)
     print("average psnr for deblurred images\n", psnr_pred/n )
 
-    print("average ssim for corrupted images\n", ssim_corrupted/n)
+    print("\naverage ssim for corrupted images\n", ssim_corrupted/n)
     print("average ssim for deblurred images\n", ssim_pred/n )
 
 
