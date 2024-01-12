@@ -6,25 +6,25 @@ class DoubleConv(nn.Module):
     def __init__(self, in_channels, out_channels):
         super(DoubleConv, self).__init__()
         self.conv = nn.Sequential(
-            nn.Conv2d(in_channels, out_channels, 3, 1, 1, bias=False),
-            nn.BatchNorm2d(out_channels),
+            nn.Conv3d(in_channels, out_channels, 3, 1, 1, bias=False),
+            nn.BatchNorm3d(out_channels),
             nn.ReLU(inplace=True),
-            nn.Conv2d(out_channels, out_channels, 3, 1, 1, bias=False),
-            nn.BatchNorm2d(out_channels),
+            nn.Conv3d(out_channels, out_channels, 3, 1, 1, bias=False),
+            nn.BatchNorm3d(out_channels),
             nn.ReLU(inplace=True),
         )
 
     def forward(self, x):
         return self.conv(x)
 
-class UNET_2d(nn.Module):
+class UNET_3d(nn.Module):
     def __init__(
-            self, in_channels=1, out_channels=1, features=[64, 128, 256],
+            self, in_channels=1, out_channels=1, features=[64, 128],
     ):
-        super(UNET_2d, self).__init__()
+        super(UNET_3d, self).__init__()
         self.ups = nn.ModuleList()
         self.downs = nn.ModuleList()
-        self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
+        self.pool = nn.MaxPool3d(kernel_size=2, stride=2)
 
         # Down part of UNET
         for feature in features:
@@ -34,14 +34,14 @@ class UNET_2d(nn.Module):
         # Up part of UNET
         for feature in reversed(features):
             self.ups.append(
-                nn.ConvTranspose2d(
+                nn.ConvTranspose3d(
                     feature*2, feature, kernel_size=2, stride=2,
                 )
             )
             self.ups.append(DoubleConv(feature*2, feature))
 
         self.bottleneck = DoubleConv(features[-1], features[-1]*2)
-        self.final_conv = nn.Conv2d(features[0], out_channels, kernel_size=1)
+        self.final_conv = nn.Conv3d(features[0], out_channels, kernel_size=1)
 
     def forward(self, x):
         skip_connections = []
@@ -59,9 +59,6 @@ class UNET_2d(nn.Module):
         for idx in range(0, len(self.ups), 2):
             x = self.ups[idx](x)
             skip_connection = skip_connections[idx//2]
-
-            if x.shape != skip_connection.shape:
-               x = TF.resize(x, size=skip_connection.shape[2:])
 
             concat_skip = torch.cat((skip_connection, x), dim=1)
             x = self.ups[idx+1](concat_skip)
@@ -83,8 +80,8 @@ def get_n_params(model):
     return pp
 
 def test():
-    x = torch.randn((1, 1, 836, 836))
-    model = UNET_2d(in_channels=1, out_channels=1)
+    x = torch.randn((1, 1, 836, 836, 4))
+    model = UNET_3d(in_channels=1, out_channels=1)
     preds = model(x)
     print(preds.shape)
     print(x.shape)

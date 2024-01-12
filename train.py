@@ -4,7 +4,7 @@ import torch.optim as optim
 #import albumentations as A
 #from albumentations.pytorch import ToTensorV2
 from earlyStopping import EarlyStopping
-from model import UNET
+from model import UNET_2d
 from tqdm import tqdm
 from utils import (
     load_checkpoint,
@@ -62,7 +62,7 @@ def main():
     torch.backends.cudnn.benchmark =  True
     torch.backends.cudnn.enabled =  True
 
-    model = UNET(in_channels=1, out_channels=1).to(DEVICE)
+    model = UNET_2d(in_channels=1, out_channels=1).to(DEVICE)
     loss_fn = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr = LEARNING_RATE)
     es = EarlyStopping()

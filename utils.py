@@ -1,5 +1,6 @@
 import torch
-from dataset import MayoDataset
+from dataset import SeeTrough2d
+from dataset import SeeTrough3d
 from torch.utils.data import DataLoader
 import numpy as np
 
@@ -27,7 +28,7 @@ def get_loaders(
     num_workers=1,
     pin_memory=True,
 ):
-    train_ds = MayoDataset(
+    train_ds = SeeTrough2d(
         img_dir_x=train_x,
         img_dir_y=train_y,
         # transform=train_transform,
