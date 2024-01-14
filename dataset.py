@@ -36,11 +36,13 @@ class SeeTrough2d(Dataset):
 
 class SeeTrough3d(Dataset):
     def __init__(self, img_dir_x, img_dir_y, transform=None, target_transform=None):
+        # self.orderd_x = sorted(os.listdir(img_dir_x))
+        # self.orderd_y = sorted(os.listdir(img_dir_y))
         self.img_x = img_dir_x 
         self.img_y = img_dir_y
         self.transform = transform
         self.target_transform = target_transform
-        self.images = os.listdir(img_dir_y)
+        self.images = sorted(os.listdir(img_dir_y))
  
     def __len__(self):
         #print("THE LEN OF THE DATASET: ", len(self.images), "\n")

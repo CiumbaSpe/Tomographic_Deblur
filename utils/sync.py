@@ -12,6 +12,7 @@ def main():
     os.mkdir("ordered_dir")
 
     for i in files:
+        print(i)
         shutil.copy(sys.argv[1] + "/" + i, "ordered_dir/" + i)
     
     #os.rmdir(sys.argv[1])

@@ -13,6 +13,7 @@ sys.path.insert(0, '../3d')
 
 from pydicom.dataset import Dataset
 from model_3d import UNET_3d
+from tqdm import tqdm
 import torch
 from utils.utils import (
     load_checkpoint, normalize, get_loaders
@@ -20,14 +21,12 @@ from utils.utils import (
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 MODEL = UNET_3d(in_channels=1, out_channels=1).to(DEVICE) 
-SLICES = 4
+BATCH_SIZE = 4
 
-def pred_image(image, model = MODEL):
+def pred_image(data, model = MODEL):
         model.eval()
         with torch.no_grad(): # does not calculate gradient
-            preds = torch.from_numpy(image).unsqueeze(0).unsqueeze(0).to(DEVICE)
-            preds_tensor = model(preds)
-
+            preds_tensor = model(data)
             preds_tensor = preds_tensor.squeeze(0).squeeze(0).cpu()
             return preds_tensor.numpy() 
 
@@ -54,34 +53,22 @@ def main():
 
     # per ogni i in input passo alla rete e salvo output
     output = []
-    stack_slices = []
 
     loader = get_loaders(
-        sys.argv[1],
-        sys.argv[1],
-        1,
+        sys.argv[2],
+        sys.argv[2],
+        BATCH_SIZE,
     )
 
     loop = tqdm(loader) 
 
-    MODEL.train()
     # RUNNING TROUGH ALL THE BATCHES
+    MODEL.eval()
     for batch_idx, (data, targets) in enumerate(loop):
-        # print(data.dtype)
-        # torch.unsqueeze(data, 1).to(device = DEVICE)
         data = torch.unsqueeze(data, 1).to(device = DEVICE)
-        print(data.shape)
-
-    # for i in range(len(input)):
-    #     for j in range(SLICES):
-    #         image = normalize(np.load(os.path.join(sys.argv[2], input[i + j])).astype(np.float32))
-    #         stack_slices.append(image)
-
-    #     image_3d = np.stack(stack_slices)
-
-    #     pred = pred_image(image_3d)
-    #     pred = (pred - np.min(pred)) / (np.max(pred) - np.min(pred)) * 255
-    #     #output.append(pred)
+        pred = pred_image(data)
+        pred = (pred - np.min(pred)) / (np.max(pred) - np.min(pred)) * 255
+        output.append(pred)
 
     megaOutput = np.stack(output)
     print(megaOutput.shape)
