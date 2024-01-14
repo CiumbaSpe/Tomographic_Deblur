@@ -13,4 +13,4 @@ gigadose_dataset
 *.tif
 *.npy
 volume_out
-.vscode
+.vscode/*
