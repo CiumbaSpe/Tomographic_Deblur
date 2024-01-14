@@ -44,6 +44,9 @@ def train(loader, model, optimizer, loss_fn, scaler, save_loss):
         data = torch.unsqueeze(data, 1).to(device = DEVICE)
         targets = torch.unsqueeze(targets, 1).to(device = DEVICE)
     
+        if(data.shape[2] < 4): # should prevent downsizing to 0
+            break
+
         # forward
         with torch.cuda.amp.autocast():
             predictions = model(data)

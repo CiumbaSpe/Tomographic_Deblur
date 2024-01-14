@@ -79,8 +79,10 @@ class SeeTrough3d(Dataset):
 
 def main():
     a = SeeTrough3d("gigadose_dataset/trainIn", "gigadose_dataset/trainOut")
-    x, y = a.__getitem__(a.__len__() - 1)
-    print(x.shape)
+    for i in range(a.__len__()):
+        x, y = a.__getitem__(i)
+        if(x.shape[0] != 4):
+            print("Broken ", i)
 
 if __name__ == "__main__":
     main()
