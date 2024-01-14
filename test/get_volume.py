@@ -8,7 +8,7 @@ import pydicom
 from pydicom.dataset import Dataset
 from model import UNET
 import torch
-from utils import (
+from utils.utils import (
     load_checkpoint, normalize
 )
 

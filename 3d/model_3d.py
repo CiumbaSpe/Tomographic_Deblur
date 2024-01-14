@@ -80,7 +80,7 @@ def get_n_params(model):
     return pp
 
 def test():
-    x = torch.randn((1, 1, 836, 836, 4))
+    x = torch.randn((1, 1, 4, 836, 836))
     model = UNET_3d(in_channels=1, out_channels=1)
     preds = model(x)
     print(preds.shape)
