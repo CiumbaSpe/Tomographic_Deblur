@@ -5,15 +5,19 @@ import sys
 import os
 import numpy as np
 import pydicom
+
+import sys
+sys.path.insert(0, '../')
+
 from pydicom.dataset import Dataset
-from model import UNET
+from model import UNET_2d
 import torch
 from utils.utils import (
     load_checkpoint, normalize
 )
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-MODEL = UNET(in_channels=1, out_channels=1).to(DEVICE) 
+MODEL = UNET_2d(in_channels=1, out_channels=1).to(DEVICE) 
 
 
 def pred_image(image, model = MODEL):

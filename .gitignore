@@ -12,3 +12,4 @@ gigadose_dataset
 *.dcm
 *.tif
 volume_out
+.viscode

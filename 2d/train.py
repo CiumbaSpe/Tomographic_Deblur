@@ -3,6 +3,10 @@ import torch.nn as nn
 import torch.optim as optim
 #import albumentations as A
 #from albumentations.pytorch import ToTensorV2
+
+import sys
+sys.path.insert(0, '../')
+
 from earlyStopping import EarlyStopping
 from model import UNET_2d
 from tqdm import tqdm
