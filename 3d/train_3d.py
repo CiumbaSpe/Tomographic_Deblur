@@ -44,24 +44,22 @@ def train(loader, model, optimizer, loss_fn, scaler, save_loss):
         data = torch.unsqueeze(data, 1).to(device = DEVICE)
         targets = torch.unsqueeze(targets, 1).to(device = DEVICE)
     
-        if(data.shape[2] < 4): # should prevent downsizing to 0
-            break
+        if(data.shape[2] == 4): # should prevent downsizing to 0
+            # forward
+            with torch.cuda.amp.autocast():
+                predictions = model(data)
+                loss = loss_fn(predictions.float(), targets.float())
 
-        # forward
-        with torch.cuda.amp.autocast():
-            predictions = model(data)
-            loss = loss_fn(predictions.float(), targets.float())
+            sv_lss += loss.item()
+            cont += 1
 
-        sv_lss += loss.item()
-        cont += 1
+            # backward
+            optimizer.zero_grad()
+            scaler.scale(loss).backward()
+            scaler.step(optimizer)
+            scaler.update()
 
-        # backward
-        optimizer.zero_grad()
-        scaler.scale(loss).backward()
-        scaler.step(optimizer)
-        scaler.update()
-
-        loop.set_postfix(loss = sv_lss/cont)
+            loop.set_postfix(loss = sv_lss/cont)
     
     save_loss = np.append(save_loss, sv_lss/cont)
 
