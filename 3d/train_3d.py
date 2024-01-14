@@ -31,7 +31,6 @@ TRAIN_NAME = "gigadose_long_3d"
 
 def train(loader, model, optimizer, loss_fn, scaler):
     loop = tqdm(loader) 
-    # steps = list(enumerate(loader))
 
     save_loss = 0 # for loss average calculation
     cont = 0

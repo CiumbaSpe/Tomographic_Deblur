@@ -5,6 +5,7 @@ import sys
 import os
 import numpy as np
 import pydicom
+import tqdm
 
 import sys
 sys.path.insert(0, '../')
@@ -14,7 +15,7 @@ from pydicom.dataset import Dataset
 from model_3d import UNET_3d
 import torch
 from utils.utils import (
-    load_checkpoint, normalize
+    load_checkpoint, normalize, get_loaders
 )
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -54,16 +55,33 @@ def main():
     # per ogni i in input passo alla rete e salvo output
     output = []
     stack_slices = []
-    for i in range(len(input)):
-        for j in range(SLICES):
-            image = normalize(np.load(os.path.join(sys.argv[2], input[i + j])).astype(np.float32))
-            stack_slices.append(image)
 
-        image_3d = np.stack(stack_slices)
+    loader = get_loaders(
+        sys.argv[1],
+        sys.argv[1],
+        1,
+    )
 
-        pred = pred_image(image_3d)
-        pred = (pred - np.min(pred)) / (np.max(pred) - np.min(pred)) * 255
-        #output.append(pred)
+    loop = tqdm(loader) 
+
+    MODEL.train()
+    # RUNNING TROUGH ALL THE BATCHES
+    for batch_idx, (data, targets) in enumerate(loop):
+        # print(data.dtype)
+        # torch.unsqueeze(data, 1).to(device = DEVICE)
+        data = torch.unsqueeze(data, 1).to(device = DEVICE)
+        print(data.shape)
+
+    # for i in range(len(input)):
+    #     for j in range(SLICES):
+    #         image = normalize(np.load(os.path.join(sys.argv[2], input[i + j])).astype(np.float32))
+    #         stack_slices.append(image)
+
+    #     image_3d = np.stack(stack_slices)
+
+    #     pred = pred_image(image_3d)
+    #     pred = (pred - np.min(pred)) / (np.max(pred) - np.min(pred)) * 255
+    #     #output.append(pred)
 
     megaOutput = np.stack(output)
     print(megaOutput.shape)

@@ -32,7 +32,6 @@ TRAIN_DIR_Y = 'undersample_dataset/trainOut'
 
 def train(loader, model, optimizer, loss_fn, scaler):
     loop = tqdm(loader) 
-    # steps = list(enumerate(loader))
 
     model.train()
 
