@@ -19,21 +19,21 @@ from utils.utils import (
 LEARNING_RATE = 1e-3
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = 1
-NUM_EPOCHS = 5
+NUM_EPOCHS = 20
 NUM_WORKERS = 1
 TRAIN_DIR_X = '../gigadose_dataset/trainIn'
 TRAIN_DIR_Y = '../gigadose_dataset/trainOut'
-TRAIN_NAME = "gigadose_first_3d"
+TRAIN_NAME = "gigadose_long_3d"
 # VAL_DIR_X = 'new_mayo/FBPB/mayo_val/'
 # VAL_DIR_Y = 'new_mayo/GT/mayo_val/' 
 
 # TRAIN
 
-def train(loader, model, optimizer, loss_fn, scaler, save_loss):
+def train(loader, model, optimizer, loss_fn, scaler):
     loop = tqdm(loader) 
     # steps = list(enumerate(loader))
 
-    sv_lss = 0 # for loss average calculation
+    save_loss = 0 # for loss average calculation
     cont = 0
 
     model.train()
@@ -50,7 +50,7 @@ def train(loader, model, optimizer, loss_fn, scaler, save_loss):
                 predictions = model(data)
                 loss = loss_fn(predictions.float(), targets.float())
 
-            sv_lss += loss.item()
+            save_loss += loss.item()
             cont += 1
 
             # backward
@@ -59,9 +59,9 @@ def train(loader, model, optimizer, loss_fn, scaler, save_loss):
             scaler.step(optimizer)
             scaler.update()
 
-            loop.set_postfix(loss = sv_lss/cont)
+            loop.set_postfix(loss = save_loss/cont)
     
-    save_loss = np.append(save_loss, sv_lss/cont)
+    return save_loss/cont
 
 def main():
     
@@ -91,7 +91,8 @@ def main():
     
     for epoch in range(NUM_EPOCHS):
         print(f"epoch: ({epoch})")
-        train(train_loader, model, optimizer, loss_fn, scaler, save_loss)
+        average_loss = train(train_loader, model, optimizer, loss_fn, scaler)
+        save_loss = np.append(save_loss, average_loss)
 
     np.save(TRAIN_NAME, save_loss)
 

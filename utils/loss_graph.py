@@ -15,6 +15,8 @@ def main():
     y = np.load(sys.argv[1])
     x = len(y)
     
+    print(y)
+
     # Plotting the data
     plt.plot(range(x), y)
 
