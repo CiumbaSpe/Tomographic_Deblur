@@ -85,14 +85,14 @@ def main():
     )
 
     scaler = torch.cuda.amp.GradScaler()
+    
+    save_loss = np.empty(0, dtype=np.float32)
+    
     for epoch in range(NUM_EPOCHS):
-
-        save_loss = np.empty(0, dtype=np.float(32))
-
         print(f"epoch: ({epoch})")
         train(train_loader, model, optimizer, loss_fn, scaler, save_loss)
 
-        np.save(TRAIN_NAME, save_loss)
+    np.save(TRAIN_NAME, save_loss)
 
     # Save model
     checkpoint = {
