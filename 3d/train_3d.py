@@ -2,8 +2,10 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import numpy as np
-#import albumentations as A
-#from albumentations.pytorch import ToTensorV2
+
+import sys
+sys.path.insert(0, '../')
+
 from earlyStopping import EarlyStopping
 from model_3d import UNET_3d
 from tqdm import tqdm
@@ -14,14 +16,13 @@ from utils.utils import (
 )
 
 # HYPERPARAMETERS
-
 LEARNING_RATE = 1e-3
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = 1
 NUM_EPOCHS = 10
 NUM_WORKERS = 1
-TRAIN_DIR_X = 'gigadose_dataset/trainIn'
-TRAIN_DIR_Y = 'gigadose_dataset/trainOut'
+TRAIN_DIR_X = '../gigadose_dataset/trainIn'
+TRAIN_DIR_Y = '../gigadose_dataset/trainOut'
 TRAIN_NAME = "gigadose_first_3d"
 # VAL_DIR_X = 'new_mayo/FBPB/mayo_val/'
 # VAL_DIR_Y = 'new_mayo/GT/mayo_val/' 
@@ -84,14 +85,14 @@ def main():
     )
 
     scaler = torch.cuda.amp.GradScaler()
-    for epoch in range(NUM_EPOCHS):
+    # for epoch in range(NUM_EPOCHS):
 
-        save_loss = np.empty(0, dtype=np.float(32))
+    #     save_loss = np.empty(0, dtype=np.float(32))
 
-        print(f"epoch: ({epoch})")
-        train(train_loader, model, optimizer, loss_fn, scaler, save_loss)
+    #     print(f"epoch: ({epoch})")
+    #     train(train_loader, model, optimizer, loss_fn, scaler, save_loss)
 
-        np.save(TRAIN_NAME, save_loss)
+    #     np.save(TRAIN_NAME, save_loss)
 
     # Save model
     checkpoint = {

@@ -6,7 +6,7 @@ import torch.optim as optim
 from earlyStopping import EarlyStopping
 from model import UNET_2d
 from tqdm import tqdm
-from utils import (
+from utils.utils import (
     load_checkpoint,
     save_checkpoint,
     get_loaders

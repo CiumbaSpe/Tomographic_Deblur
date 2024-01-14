@@ -6,7 +6,7 @@ from sklearn.metrics import mean_squared_error
 from skimage.metrics import structural_similarity as ssim
 from skimage.metrics import peak_signal_noise_ratio as psnr
 from model import UNET
-from utils import (
+from utils.utils import (
     load_checkpoint, normalize
 )
 
