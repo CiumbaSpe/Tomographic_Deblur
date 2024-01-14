@@ -10,11 +10,21 @@ def main():
         print("ERR: Usage\npython3 loss_graph.py [file_loss.npy]")
         return 1
 
+    nome_rete = os.path.splitext(sys.argv[1])[0]
+
     y = np.load(sys.argv[1])
     x = len(y)
+    
+    # Plotting the data
+    plt.plot(range(x), y)
 
-    print(y)
-    print(x)
+    # Adding labels and title
+    plt.xlabel('Epochs')
+    plt.ylabel('MSE')
+    plt.title('ciao')
+
+    # Displaying the plot
+    plt.show()
 
 
     return 0
