@@ -61,10 +61,9 @@ def main():
 
         image_3d = np.stack(stack_slices)
 
-        # print("I", i)
         pred = pred_image(image_3d)
         pred = (pred - np.min(pred)) / (np.max(pred) - np.min(pred)) * 255
-        output.append(pred)
+        #output.append(pred)
 
     megaOutput = np.stack(output)
     print(megaOutput.shape)
