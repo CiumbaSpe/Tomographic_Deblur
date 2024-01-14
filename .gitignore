@@ -11,5 +11,6 @@ undersample_dataset
 gigadose_dataset
 *.dcm
 *.tif
+*.npy
 volume_out
 .vscode
