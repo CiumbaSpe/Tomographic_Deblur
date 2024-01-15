@@ -54,15 +54,21 @@ class SeeTrough3d(Dataset):
         concat_trg = []
 
         for i in range(4):
-            if(idx + i < self.__len__()):
-                sample_x = os.path.join(self.img_x, self.images[idx + i])
-                target_y = os.path.join(self.img_y, self.images[idx + i])
 
-                image = np.load(sample_x).astype(np.float32)
-                target = np.load(target_y).astype(np.float32)
+            # add this comment line for stride 4 in get_volume
+            if(idx == 0 or (idx != 1 and idx % 4 == 0)):
+                if(idx + i < self.__len__()):
+                    sample_x = os.path.join(self.img_x, self.images[idx + i])
+                    target_y = os.path.join(self.img_y, self.images[idx + i])
 
-                concat_img.append(image)
-                concat_trg.append(target)
+                    image = np.load(sample_x).astype(np.float32)
+                    target = np.load(target_y).astype(np.float32)
+
+                    concat_img.append(image)
+                    concat_trg.append(target)
+            else:
+                return 0, 0, False
+
 
         x = np.stack(concat_img)
         y = np.stack(concat_trg)
@@ -76,7 +82,7 @@ class SeeTrough3d(Dataset):
         if self.target_transform:
             target = self.target_transform(target)
         
-        return x, y
+        return x, y, idx
 
 
 def main():
