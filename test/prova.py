@@ -13,30 +13,56 @@ def main():
 
     print(megaOutput.shape)
 
-    # Create a new DICOM dataset
-    dataset = Dataset()
+    output = np.empty(0)
+        
+    # 0,0
+    # 0,1 1,0
+    # 0,2 1,1 2,0
+    output = np.append(output, megaOutput[0,0])
+    # output = np.append(output, megaOutput[0,0])
+    # ...
 
-    # Set required DICOM attributes
-    dataset.PatientName = "Tom"
-    dataset.PatientID = "123456"
-    dataset.Modality = "CT"
-    # dataset.SeriesInstanceUID = UID.generate_uid()
+    # 0,3 1,2 2,1 3,0
+    # 1,3 2,2 3,1 4,0
+    # 2,3 3,2 4,1 5,0
+    for i in range(megaOutput.shape[0] - 6):
+        cont = i
+        for j in reversed(range(4)):
+            print(cont, j)
+            cont += 1
+        
+        print()
 
-    # Set the transfer syntax
-    dataset.is_little_endian = True
-    dataset.is_implicit_VR = True
+    # 3,3 4,2 5,1
+    # 4,3 5,2 
+    # 5,3
 
-    # Set image-related DICOM attributes
-    dataset.Rows = megaOutput.shape[2]
-    dataset.Columns = megaOutput.shape[3]
-    dataset.BitsAllocated = 16
-    dataset.SamplesPerPixel = 1
-    dataset.NumberOfFrames = megaOutput.shape[0] * megaOutput.shape[1]
-    dataset.PixelData = megaOutput.astype(np.uint16).tobytes()
 
-    # Save the DICOM dataset to a file
-    filename = "daicom"
-    pydicom.filewriter.write_file(filename, dataset)
+
+    # # Create a new DICOM dataset
+    # dataset = Dataset()
+
+    # # Set required DICOM attributes
+    # dataset.PatientName = "Tom"
+    # dataset.PatientID = "123456"
+    # dataset.Modality = "CT"
+    # # dataset.SeriesInstanceUID = UID.generate_uid()
+
+    # # Set the transfer syntax
+    # dataset.is_little_endian = True
+    # dataset.is_implicit_VR = True
+
+    # # Set image-related DICOM attributes
+    # dataset.Rows = megaOutput.shape[2]
+    # dataset.Columns = megaOutput.shape[3]
+    # dataset.BitsAllocated = 16
+    # dataset.SamplesPerPixel = 1
+    # dataset.NumberOfFrames = megaOutput.shape[0] * megaOutput.shape[1]
+    # dataset.PixelData = megaOutput.astype(np.uint16).tobytes()
+
+    # # Save the DICOM dataset to a file
+    # filename = "daicom"
+    # pydicom.filewriter.write_file(filename, dataset)
 
     return 0
 
