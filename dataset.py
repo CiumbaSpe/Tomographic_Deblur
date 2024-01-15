@@ -10,7 +10,7 @@ class SeeTrough2d(Dataset):
         self.img_y = img_dir_y
         self.transform = transform
         self.target_transform = target_transform
-        self.images = os.listdir(img_dir_y)
+        self.images = sorted(os.listdir(img_dir_y))
  
     def __len__(self):
         #print("THE LEN OF THE DATASET: ", len(self.images), "\n")

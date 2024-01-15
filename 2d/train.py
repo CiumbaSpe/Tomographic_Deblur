@@ -21,10 +21,10 @@ from utils.utils import (
 LEARNING_RATE = 1e-3
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = 4
-NUM_EPOCHS = 200
+NUM_EPOCHS = 20
 NUM_WORKERS = 1
-TRAIN_DIR_X = 'undersample_dataset/240_trainIn'
-TRAIN_DIR_Y = 'undersample_dataset/trainOut'
+TRAIN_DIR_X = '../undersample_dataset/240_trainIn'
+TRAIN_DIR_Y = '../undersample_dataset/trainOut'
 # VAL_DIR_X = 'new_mayo/FBPB/mayo_val/'
 # VAL_DIR_Y = 'new_mayo/GT/mayo_val/' 
 
@@ -91,7 +91,7 @@ def main():
         "state_dict": model.state_dict(),
         "optimizer": optimizer.state_dict(),
     }
-    save_checkpoint(checkpoint, "240_long_train.pth.tar")
+    save_checkpoint(checkpoint, "240_v1Full_20ep.pth.tar")
 
 if __name__ == "__main__":
     main()

@@ -28,7 +28,7 @@ def get_loaders(
     num_workers=1,
     pin_memory=True,
 ):
-    train_ds = SeeTrough3d(
+    train_ds = SeeTrough2d(
         img_dir_x=train_x,
         img_dir_y=train_y,
         # transform=train_transform,
@@ -39,7 +39,7 @@ def get_loaders(
         batch_size=batch_size,
         num_workers=num_workers,
         pin_memory=pin_memory,
-        shuffle=False,
+        shuffle=True,
     )
 
     # val_ds = MayoDataset(
