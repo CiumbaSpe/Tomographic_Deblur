@@ -27,7 +27,7 @@ NUM_EPOCHS = 20
 NUM_WORKERS = 1
 TRAIN_DIR_X = '../gigadose_dataset/trainIn'
 TRAIN_DIR_Y = '../gigadose_dataset/trainOut'
-TRAIN_NAME = 'gigadose_2d_noSkip_20ep.pth.tar'
+TRAIN_NAME = 'gigadose_2d_noSkip_20ep'
 # VAL_DIR_X = 'new_mayo/FBPB/mayo_val/'
 # VAL_DIR_Y = 'new_mayo/GT/mayo_val/' 
 
