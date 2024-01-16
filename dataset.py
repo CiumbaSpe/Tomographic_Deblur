@@ -81,7 +81,7 @@ class SeeTrough3d(Dataset):
         if self.target_transform:
             target = self.target_transform(target)
         
-        return x, y
+        return x, y, idx
 
 
 def main():
