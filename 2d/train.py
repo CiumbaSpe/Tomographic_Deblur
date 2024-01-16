@@ -23,11 +23,11 @@ from utils.utils import (
 LEARNING_RATE = 1e-3
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = 4
-NUM_EPOCHS = 100
+NUM_EPOCHS = 20
 NUM_WORKERS = 1
 TRAIN_DIR_X = '../gigadose_dataset/trainIn'
 TRAIN_DIR_Y = '../gigadose_dataset/trainOut'
-TRAIN_NAME = 'gigadose_2d_noSkip'
+TRAIN_NAME = 'gigadose_2d_noSkip_20ep.pth.tar'
 # VAL_DIR_X = 'new_mayo/FBPB/mayo_val/'
 # VAL_DIR_Y = 'new_mayo/GT/mayo_val/' 
 
