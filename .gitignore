@@ -1,5 +1,5 @@
 log_train*
-test_out
+test_out*
 *.sbatch
 __pycache__
 risultati.png
@@ -12,5 +12,5 @@ gigadose_dataset
 *.dcm
 *.tif
 *.npy
-volume_out
+volume_out*
 .vscode
