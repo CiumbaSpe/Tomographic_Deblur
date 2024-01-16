@@ -44,7 +44,7 @@ def load(checkpoint):
 def main():
 
     if (len(sys.argv) < 4):
-        print("ERR: Usage\npython3 get_volume [net_weights] [dataset] [output_name.tif]")
+        print("ERR: Usage\npython3 get_volume [net_weights] [dataset] [output_name.dcm]")
         return 1
 
     load(sys.argv[1]) # load checkpoint in argv[1]
@@ -60,33 +60,33 @@ def main():
         pred = (pred - np.min(pred)) / (np.max(pred) - np.min(pred)) * 255
         output.append(pred)
 
-    # megaOutput = np.stack(output)
-    # print(megaOutput.shape[0])
+    megaOutput = np.stack(output)
+    print(megaOutput.shape[0])
 
-    # # Create a new DICOM dataset
-    # dataset = Dataset()
+    # Create a new DICOM dataset
+    dataset = Dataset()
 
-    # # Set required DICOM attributes
-    # dataset.PatientName = "Tom"
-    # dataset.PatientID = "123456"
-    # dataset.Modality = "CT"
-    # # dataset.SeriesInstanceUID = UID.generate_uid()
+    # Set required DICOM attributes
+    dataset.PatientName = "Tom"
+    dataset.PatientID = "123456"
+    dataset.Modality = "CT"
+    # dataset.SeriesInstanceUID = UID.generate_uid()
 
-    # # Set the transfer syntax
-    # dataset.is_little_endian = True
-    # dataset.is_implicit_VR = True
+    # Set the transfer syntax
+    dataset.is_little_endian = True
+    dataset.is_implicit_VR = True
 
-    # # Set image-related DICOM attributes
-    # dataset.Rows = megaOutput.shape[1]
-    # dataset.Columns = megaOutput.shape[2]
-    # dataset.BitsAllocated = 16
-    # dataset.SamplesPerPixel = 1
-    # dataset.NumberOfFrames = megaOutput.shape[0]
-    # dataset.PixelData = megaOutput.astype(np.uint16).tobytes()
+    # Set image-related DICOM attributes
+    dataset.Rows = megaOutput.shape[1]
+    dataset.Columns = megaOutput.shape[2]
+    dataset.BitsAllocated = 16
+    dataset.SamplesPerPixel = 1
+    dataset.NumberOfFrames = megaOutput.shape[0]
+    dataset.PixelData = megaOutput.astype(np.uint16).tobytes()
 
-    # # Save the DICOM dataset to a file
-    # filename = sys.argv[3]
-    # pydicom.filewriter.write_file(filename, dataset)
+    # Save the DICOM dataset to a file
+    filename = sys.argv[3]
+    pydicom.filewriter.write_file(filename, dataset)
 
     return 0 
 
