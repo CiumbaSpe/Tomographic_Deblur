@@ -25,9 +25,9 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = 4
 NUM_EPOCHS = 20
 NUM_WORKERS = 1
-TRAIN_DIR_X = '../gigadose_dataset/trainIn'
-TRAIN_DIR_Y = '../gigadose_dataset/trainOut'
-TRAIN_NAME = 'gigadose_2d.pth.tar'
+TRAIN_DIR_X = '../SeeTrough/gigadose/trainIn'
+TRAIN_DIR_Y = '../SeeTrough/gigadose/trainOut'
+TRAIN_NAME = "gigadose_2d"
 DIMENSION = '2d'
 
 # VAL_DIR_X = 'new_mayo/FBPB/mayo_val/'
@@ -65,7 +65,6 @@ def train(loader, model, optimizer, loss_fn, scaler):
         scaler.update()
 
         loop.set_postfix(loss = loss.item())
-    
     
     return save_loss/cont
 

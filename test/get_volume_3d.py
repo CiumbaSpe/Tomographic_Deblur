@@ -16,7 +16,7 @@ from model_3d import UNET_3d
 from tqdm import tqdm
 import torch
 from utils.utils import (
-    load_checkpoint, normalize, get_loaders
+    load_checkpoint, get_loaders
 )
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -72,12 +72,14 @@ def main():
             data = torch.unsqueeze(data, 1).to(device = DEVICE)
             if(data.shape[2] == 4): # should prevent downsizing to 0
                 pred = pred_image(data)
-                pred = (pred - np.min(pred)) / (np.max(pred) - np.min(pred)) * 255
+                # pred = (pred - np.min(pred)) / (np.max(pred) - np.min(pred)) * 255
                 output.append(pred)
                 # cont += 1
                 # if cont == 10:
                 #     break
 
+    # normalize 0-255
+    megaOutput = (megaOutput - np.min(megaOutput)) / (np.max(megaOutput) - np.min(megaOutput)) * 255
     megaOutput = np.stack(output)
     
     # Create a new DICOM dataset

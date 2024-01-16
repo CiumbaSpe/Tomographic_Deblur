@@ -15,7 +15,7 @@ from pydicom.dataset import Dataset
 from model import UNET_2d
 import torch
 from utils.utils import (
-    load_checkpoint, normalize
+    load_checkpoint
 )
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -55,11 +55,13 @@ def main():
     # per ogni i in input passo alla rete e salvo output
     output = []
     for i in input:
-        image = normalize(np.load(os.path.join(sys.argv[2], i)).astype(np.float32))
+        image = np.load(os.path.join(sys.argv[2], i))
         pred = pred_image(image)
         output.append(pred)
 
+    # normalize 0-255
     megaOutput = (megaOutput - np.min(megaOutput)) / (np.max(megaOutput) - np.min(megaOutput)) * 255
+    
     megaOutput = np.stack(output)
     print(megaOutput.shape[0])
 

@@ -1,9 +1,11 @@
 log_train*
 test_out*
+net_result
 *.sbatch
 __pycache__
 risultati.png
 seeTroughDataset
+SeeTrough
 prova
 weights
 *.pth.tar

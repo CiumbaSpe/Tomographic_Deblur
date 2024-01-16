@@ -12,7 +12,6 @@ class EarlyStopping:
 
     def __call__(self, model, val_loss):
         if(self.best_loss is None):
-            print("par furz")
             self.best_loss = val_loss
             self.best_model = copy.deepcopy(model.state_dict())
         elif (self.best_loss - val_loss >= self.min_delta):            

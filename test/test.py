@@ -5,20 +5,25 @@ import sys
 from sklearn.metrics import mean_squared_error
 from skimage.metrics import structural_similarity as ssim
 from skimage.metrics import peak_signal_noise_ratio as psnr
-from model import UNET
+from model import UNET_2d
+# from model import UNET_3d
 from utils.utils import (
-    load_checkpoint, normalize
+    load_checkpoint
 )
+
+sys.path.insert(0, '../')
+sys.path.insert(0, '../3d')
+sys.path.insert(0, '../2d')
 
 
 CHECKPOINT = "weights/first_seetrough.pth.tar" # default value
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-MODEL = UNET(in_channels=1, out_channels=1).to(DEVICE) 
+MODEL = UNET_2d(in_channels=1, out_channels=1).to(DEVICE) 
 
 # cosa vuoi testare
 
-GTDIR = "./undersample_dataset/testOut/"
-NOISEDIR = "./undersample_dataset/240_testIn/"
+GTDIR = "./SeeTrough/gigadose/testOut/"
+NOISEDIR = "./SeeTrough/gigadose/testIn/"
 
 def pred_image(image, model):
         model.eval()
@@ -42,8 +47,8 @@ def test(model):
     n = len(os.listdir(GTDIR))
 
     for i in os.listdir(GTDIR):
-        gt = normalize(np.load(GTDIR + i).astype(np.float32))
-        noise = normalize(np.load(NOISEDIR + i).astype(np.float32))
+        gt = np.load(GTDIR + i)
+        noise = np.load(NOISEDIR + i)
         
         mse_corrupted += mean_squared_error(gt, noise)
         psnr_corrupted += psnr(gt, noise)

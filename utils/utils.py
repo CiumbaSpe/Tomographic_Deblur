@@ -29,6 +29,7 @@ def get_loaders(
     num_workers=1,
     pin_memory=True,
 ):
+    shuffle = True
     if(dimension == '2D' or dimension == '2d'):
         train_ds = SeeTrough2d(
             img_dir_x=train_x,
@@ -41,13 +42,14 @@ def get_loaders(
             img_dir_y=train_y,
             # transform=train_transform,
         )
+        shuffle = False
 
     train_loader = DataLoader(
         train_ds,
         batch_size=batch_size,
         num_workers=num_workers,
         pin_memory=pin_memory,
-        shuffle=False,
+        shuffle=shuffle, # if in 2d shuffle in 3d no shuffle
     )
 
     # val_ds = MayoDataset(

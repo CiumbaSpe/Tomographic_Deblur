@@ -6,21 +6,26 @@ import os
 import sys
 from sklearn.metrics import mean_squared_error
 from skimage.metrics import structural_similarity as ssim
-from model import UNET
+from model import UNET_2d
+# from model import UNET_3d
 from utils.utils import (
-    load_checkpoint, normalize
+    load_checkpoint
 )
+
+sys.path.insert(0, '../')
+sys.path.insert(0, '../3d')
+sys.path.insert(0, '../2d')
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 CHECKPOINT = "weights/first_seetrough.pth.tar" # default
-MODEL = UNET(in_channels=1, out_channels=1).to(DEVICE) 
+MODEL = UNET_2d(in_channels=1, out_channels=1).to(DEVICE) 
 
 NUM = 3 # default number of image to show
 COLUMN = 3
 
 # test data dir
-GTDIR = "./gigadose_dataset/testOut/"
-NOISEDIR = "./gigadose_dataset/testIn/"
+GTDIR = "./SeeTrough/gigadose/testOut/"
+NOISEDIR = "./SeeTrough/gigadose/testIn/"
 
 
 def pred_image(image, model = MODEL):
@@ -44,12 +49,10 @@ def visualize_image(num = NUM):
         print(GTDIR + img[i])
         print(NOISEDIR + img[i])
 
-        gt = normalize(np.load(GTDIR + img[i]).astype(np.float32))
-        noise = normalize(np.load(NOISEDIR + img[i]).astype(np.float32))
+        gt = np.load(GTDIR + img[i])
+        noise = np.load(NOISEDIR + img[i])
 
         pred = pred_image(noise, MODEL)
-
-
 
         #mse_noise = mean_squared_error(gt, noise)
         #mse_pred = mean_squared_error(gt, pred)
