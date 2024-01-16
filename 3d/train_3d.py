@@ -24,6 +24,7 @@ NUM_WORKERS = 1
 TRAIN_DIR_X = '../gigadose_dataset/trainIn'
 TRAIN_DIR_Y = '../gigadose_dataset/trainOut'
 TRAIN_NAME = "gigadose_long_3d"
+DIMENSION = '3d'
 # VAL_DIR_X = 'new_mayo/FBPB/mayo_val/'
 # VAL_DIR_Y = 'new_mayo/GT/mayo_val/' 
 
@@ -76,6 +77,7 @@ def main():
 
     # train_loader, val_loader = fget_loader...
     train_loader = get_loaders(
+        DIMENSION, # should be 3d here
         TRAIN_DIR_X,
         TRAIN_DIR_Y,
         # VAL_DIR_X,

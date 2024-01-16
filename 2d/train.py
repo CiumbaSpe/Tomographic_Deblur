@@ -27,7 +27,9 @@ NUM_EPOCHS = 20
 NUM_WORKERS = 1
 TRAIN_DIR_X = '../gigadose_dataset/trainIn'
 TRAIN_DIR_Y = '../gigadose_dataset/trainOut'
-TRAIN_NAME = 'gigadose_2d_noSkip_20ep'
+TRAIN_NAME = 'gigadose_2d.pth.tar'
+DIMENSION = '2d'
+
 # VAL_DIR_X = 'new_mayo/FBPB/mayo_val/'
 # VAL_DIR_Y = 'new_mayo/GT/mayo_val/' 
 
@@ -75,13 +77,14 @@ def main():
     torch.backends.cudnn.benchmark =  True
     torch.backends.cudnn.enabled =  True
 
-    model = UNET_2d_noSkip(in_channels=1, out_channels=1).to(DEVICE)
+    model = UNET_2d(in_channels=1, out_channels=1).to(DEVICE)
     loss_fn = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr = LEARNING_RATE)
     es = EarlyStopping()
 
     # train_loader, val_loader = fget_loader...
     train_loader = get_loaders(
+        DIMENSION,
         TRAIN_DIR_X,
         TRAIN_DIR_Y,
         # VAL_DIR_X,

@@ -24,6 +24,7 @@ def main():
     plt.xlabel('Epochs')
     plt.ylabel('MSE')
     plt.title(nome_rete)
+    plt.xticks(range(x))
     plt.savefig(nome_rete + '_loss.png')
 
     # Displaying the plot

@@ -18,6 +18,7 @@ def normalize(img):
     return img
 
 def get_loaders(
+    dimension, # for 2d or 3d dataset
     train_x,
     train_y,
     # val_x,
@@ -28,11 +29,18 @@ def get_loaders(
     num_workers=1,
     pin_memory=True,
 ):
-    train_ds = SeeTrough2d(
-        img_dir_x=train_x,
-        img_dir_y=train_y,
-        # transform=train_transform,
-    )
+    if(dimension == '2D' or dimension == '2d'):
+        train_ds = SeeTrough2d(
+            img_dir_x=train_x,
+            img_dir_y=train_y,
+            # transform=train_transform,
+        )
+    elif(dimension == '3D' or dimension == '3d'):
+        train_ds = SeeTrough3d(
+            img_dir_x=train_x,
+            img_dir_y=train_y,
+            # transform=train_transform,
+        )
 
     train_loader = DataLoader(
         train_ds,
