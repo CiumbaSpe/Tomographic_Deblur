@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
+import numpy as np
 #import albumentations as A
 #from albumentations.pytorch import ToTensorV2
 
@@ -9,6 +10,7 @@ sys.path.insert(0, '../')
 
 from earlyStopping import EarlyStopping
 from model import UNET_2d
+from model import UNET_2d_noSkip
 from tqdm import tqdm
 from utils.utils import (
     load_checkpoint,
@@ -21,10 +23,11 @@ from utils.utils import (
 LEARNING_RATE = 1e-3
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = 4
-NUM_EPOCHS = 20
+NUM_EPOCHS = 100
 NUM_WORKERS = 1
 TRAIN_DIR_X = '../undersample_dataset/240_trainIn'
 TRAIN_DIR_Y = '../undersample_dataset/trainOut'
+TRAIN_NAME = 'gigadose_2d_noSkip'
 # VAL_DIR_X = 'new_mayo/FBPB/mayo_val/'
 # VAL_DIR_Y = 'new_mayo/GT/mayo_val/' 
 
@@ -34,6 +37,9 @@ def train(loader, model, optimizer, loss_fn, scaler):
     loop = tqdm(loader) 
 
     model.train()
+
+    save_loss = 0 # for loss average calculation
+    cont = 0
 
     # RUNNING TROUGH ALL THE BATCHES
     for batch_idx, (data, targets) in enumerate(loop):
@@ -47,6 +53,9 @@ def train(loader, model, optimizer, loss_fn, scaler):
             predictions = model(data)
             loss = loss_fn(predictions.float(), targets.float())
 
+        save_loss += loss.item()
+        cont += 1
+
         # backward
         optimizer.zero_grad()
         scaler.scale(loss).backward()
@@ -56,7 +65,8 @@ def train(loader, model, optimizer, loss_fn, scaler):
         loop.set_postfix(loss = loss.item())
     
     
-    return False
+    return save_loss/cont
+
 
 def main():
     
@@ -65,7 +75,7 @@ def main():
     torch.backends.cudnn.benchmark =  True
     torch.backends.cudnn.enabled =  True
 
-    model = UNET_2d(in_channels=1, out_channels=1).to(DEVICE)
+    model = UNET_2d_noSkip(in_channels=1, out_channels=1).to(DEVICE)
     loss_fn = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr = LEARNING_RATE)
     es = EarlyStopping()
@@ -81,17 +91,24 @@ def main():
     )
 
     scaler = torch.cuda.amp.GradScaler()
+
+    save_loss = np.empty(0, dtype=np.float32)
+
     for epoch in range(NUM_EPOCHS):
         print(f"epoch: ({epoch})")
-        if(train(train_loader, model, optimizer, loss_fn, scaler)):
-            break
+        average_loss = train(train_loader, model, optimizer, loss_fn, scaler)
+        save_loss = np.append(save_loss, average_loss)
+
+
+    np.save(TRAIN_NAME, save_loss)
+
 
     # Save model
     checkpoint = {
         "state_dict": model.state_dict(),
         "optimizer": optimizer.state_dict(),
     }
-    save_checkpoint(checkpoint, "240_v1Full_20ep.pth.tar")
+    save_checkpoint(checkpoint, TRAIN_NAME+".pth.tar")
 
 if __name__ == "__main__":
     main()
