@@ -1,4 +1,4 @@
-log_train
+log_train*
 test_out
 *.sbatch
 __pycache__
@@ -13,4 +13,4 @@ gigadose_dataset
 *.tif
 *.npy
 volume_out
-.vscode/*
+.vscode
