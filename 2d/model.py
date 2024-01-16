@@ -77,7 +77,7 @@ class UNET_2d_noSkip(nn.Module):
     def __init__(
             self, in_channels=1, out_channels=1, features=[64, 128, 256],
     ):
-        super(UNET_2d, self).__init__()
+        super(UNET_2d_noSkip, self).__init__()
         self.ups = nn.ModuleList()
         self.downs = nn.ModuleList()
         self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
