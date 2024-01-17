@@ -57,7 +57,7 @@ def main():
     for i in input:
         image = np.load(os.path.join(sys.argv[2], i))
         pred = pred_image(image)
-        output.append(image)
+        output.append(pred)
 
 
     megaOutput = np.stack(output)
