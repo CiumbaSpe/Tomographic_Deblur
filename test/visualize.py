@@ -6,15 +6,17 @@ import os
 import sys
 from sklearn.metrics import mean_squared_error
 from skimage.metrics import structural_similarity as ssim
+
+sys.path.insert(0, '../')
+sys.path.insert(0, '../3d')
+sys.path.insert(0, '../2d')
+
 from model import UNET_2d
 # from model import UNET_3d
 from utils.utils import (
     load_checkpoint
 )
 
-sys.path.insert(0, '../')
-sys.path.insert(0, '../3d')
-sys.path.insert(0, '../2d')
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 CHECKPOINT = "weights/first_seetrough.pth.tar" # default
@@ -24,8 +26,8 @@ NUM = 3 # default number of image to show
 COLUMN = 3
 
 # test data dir
-GTDIR = "./SeeTrough/gigadose/testOut/"
-NOISEDIR = "./SeeTrough/gigadose/testIn/"
+GTDIR = "../SeeTrough/gigadose/testOut/"
+NOISEDIR = "../SeeTrough/gigadose/testIn/"
 
 
 def pred_image(image, model = MODEL):
