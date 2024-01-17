@@ -81,8 +81,8 @@ def main():
     # Set image-related DICOM attributes
     dataset.Rows = megaOutput.shape[1]
     dataset.Columns = megaOutput.shape[2]
-    # dataset.BitsAllocated = 8
-    # dataset.SamplesPerPixel = 1
+    dataset.BitsAllocated = 1
+    dataset.SamplesPerPixel = 1
     dataset.NumberOfFrames = megaOutput.shape[0]
     dataset.PixelData = megaOutput.astype(np.uint8).tobytes()
 
