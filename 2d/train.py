@@ -25,9 +25,9 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = 4
 NUM_EPOCHS = 20
 NUM_WORKERS = 1
-TRAIN_DIR_X = '../SeeTrough/gigadose/trainIn'
-TRAIN_DIR_Y = '../SeeTrough/gigadose/trainOut'
-TRAIN_NAME = "gigadose_2d"
+TRAIN_DIR_X = '../SeeTrough/undersample/240_trainIn'
+TRAIN_DIR_Y = '../SeeTrough/undersample/trainOut'
+TRAIN_NAME = "240_undersample"
 DIMENSION = '2d'
 
 # VAL_DIR_X = 'new_mayo/FBPB/mayo_val/'
