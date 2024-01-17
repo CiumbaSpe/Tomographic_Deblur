@@ -62,7 +62,7 @@ def main():
 
     megaOutput = np.stack(output)
     # normalize 0-255
-    megaOutput = (megaOutput - np.min(megaOutput)) / (np.max(megaOutput) - np.min(megaOutput)) * 255
+    # megaOutput = (megaOutput - np.min(megaOutput)) / (np.max(megaOutput) - np.min(megaOutput)) * 255
     
     print(megaOutput.shape[0])
 
