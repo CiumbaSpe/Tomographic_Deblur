@@ -56,13 +56,13 @@ def main():
     output = []
     for i in input:
         image = np.load(os.path.join(sys.argv[2], i))
-        pred = pred_image(image)
-        output.append(pred)
+        # pred = pred_image(image)
+        output.append(image)
 
 
     megaOutput = np.stack(output)
     # normalize 0-255
-    # megaOutput = (megaOutput - np.min(megaOutput)) / (np.max(megaOutput) - np.min(megaOutput)) * 255
+    megaOutput = (megaOutput - np.min(megaOutput)) / (np.max(megaOutput) - np.min(megaOutput)) * 255
     
     print(megaOutput.shape[0])
 
