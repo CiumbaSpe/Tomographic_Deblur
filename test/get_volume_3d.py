@@ -78,9 +78,10 @@ def main():
                 # if cont == 10:
                 #     break
 
+    megaOutput = np.stack(output)
+
     # normalize 0-255
     megaOutput = (megaOutput - np.min(megaOutput)) / (np.max(megaOutput) - np.min(megaOutput)) * 255
-    megaOutput = np.stack(output)
     
     # Create a new DICOM dataset
     dataset = Dataset()

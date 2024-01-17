@@ -59,10 +59,11 @@ def main():
         pred = pred_image(image)
         output.append(pred)
 
+
+    megaOutput = np.stack(output)
     # normalize 0-255
     megaOutput = (megaOutput - np.min(megaOutput)) / (np.max(megaOutput) - np.min(megaOutput)) * 255
     
-    megaOutput = np.stack(output)
     print(megaOutput.shape[0])
 
     # Create a new DICOM dataset
