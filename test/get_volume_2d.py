@@ -1,10 +1,11 @@
-# prende input [rete] [dataset] [nome_file_output.tif]
-# data una rete e un file .tif ritorna in output
+# prende input [rete] [dataset] [nome_file_output.dcm]
+# data una rete e un file .dcm ritorna in output
 
 import sys
 import os
 import numpy as np
 import pydicom
+import tifffile as tif
 
 import sys
 sys.path.insert(0, '../')
@@ -62,8 +63,8 @@ def main():
 
     megaOutput = np.stack(output)
     # normalize 0-255
-    megaOutput = (megaOutput * 255)    
-    print(megaOutput.shape[0])
+    megaOutput = (megaOutput - np.max(megaOutput)) / (np.max(megaOutput) - np.min(megaOutput)) * 255    
+    
 
     # Create a new DICOM dataset
     dataset = Dataset()
@@ -72,16 +73,16 @@ def main():
     dataset.PatientName = "Tom"
     dataset.PatientID = "123456"
     dataset.Modality = "CT"
-    # dataset.SeriesInstanceUID = UID.generate_uid()
+    #dataset.SeriesInstanceUID = UID.generate_uid()
 
     # Set the transfer syntax
     dataset.is_little_endian = True
-    dataset.is_implicit_VR = True
+    dataset.is_implicit_VR = False
 
     # Set image-related DICOM attributes
     dataset.Rows = megaOutput.shape[1]
     dataset.Columns = megaOutput.shape[2]
-    dataset.BitsAllocated = 1
+    dataset.BitsAllocated = 8
     dataset.SamplesPerPixel = 1
     dataset.NumberOfFrames = megaOutput.shape[0]
     dataset.PixelData = megaOutput.astype(np.uint8).tobytes()
@@ -89,6 +90,7 @@ def main():
     # Save the DICOM dataset to a file
     filename = sys.argv[3]
     pydicom.filewriter.write_file(filename, dataset)
+    #tif.imwrite(filename, megaOutput, imagej=True, metadata={'axes': 'ZCXY'})
 
     return 0 
 
