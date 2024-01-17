@@ -84,7 +84,7 @@ def main():
     dataset.BitsAllocated = 16
     dataset.SamplesPerPixel = 1
     dataset.NumberOfFrames = megaOutput.shape[0]
-    dataset.PixelData = megaOutput.astype(np.uint16).tobytes()
+    dataset.PixelData = megaOutput.astype(np.uint8).tobytes()
 
     # Save the DICOM dataset to a file
     filename = sys.argv[3]
