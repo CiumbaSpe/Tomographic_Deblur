@@ -38,8 +38,6 @@ def load(checkpoint):
     else:
         load_checkpoint(torch.load(checkpoint, map_location=torch.device('cpu')), MODEL)
 
-
-
 def main():
 
     if (len(sys.argv) < 4):
@@ -80,6 +78,33 @@ def main():
 
     megaOutput = np.stack(output)
 
+    # CALCOLO LA MEDIA CON STRIDE 1
+    output = []    
+    l = megaOutput.shape[0]
+    # 0,0
+    # 0,1 1,0
+    # 0,2 1,1 2,0
+    output.append(megaOutput[0,0])
+    output.append(np.mean(megaOutput[0,1], megaOutput[1,0]))
+    output.append(np.mean(megaOutput[0,2], megaOutput[1,1], megaOutput[2,0]))
+
+    # 0,3 1,2 2,1 3,0
+    # 1,3 2,2 3,1 4,0
+    # 2,3 3,2 4,1 5,0
+    # ...
+    for i in range(megaOutput.shape[0] - 6):
+        output.append(np.mean(megaOutput[i,3], megaOutput[i+1, 2],
+                                   megaOutput[i+2,1], megaOutput[i+3,0]))
+        
+    output.append(np.mean(megaOutput[l-3, 3], megaOutput[l-2, 2], megaOutput(l-1, 1)))    
+    output.append(np.mean(megaOutput[l-2, 3], megaOutput[l-1, 2]))
+    output.append(np.mean(megaOutput[l-1, 3]))
+    # 3,3 4,2 5,1
+    # 4,3 5,2 
+    # 5,3
+
+    megaOutput = np.stack(output)
+
     # normalize 0-255
     megaOutput = (megaOutput - np.min(megaOutput)) / (np.max(megaOutput) - np.min(megaOutput)) * 255
     
@@ -99,10 +124,10 @@ def main():
     # Set image-related DICOM attributes
     dataset.Rows = megaOutput.shape[2]
     dataset.Columns = megaOutput.shape[3]
-    dataset.BitsAllocated = 16
+    dataset.BitsAllocated = 8
     dataset.SamplesPerPixel = 1
     dataset.NumberOfFrames = megaOutput.shape[0] * megaOutput.shape[1]
-    dataset.PixelData = megaOutput.astype(np.uint16).tobytes()
+    dataset.PixelData = megaOutput.astype(np.uint8).tobytes()
 
     # Save the DICOM dataset to a file
     filename = sys.argv[3]
