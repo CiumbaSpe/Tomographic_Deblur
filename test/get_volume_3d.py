@@ -22,6 +22,7 @@ from utils.utils import (
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 MODEL = UNET_3d(in_channels=1, out_channels=1).to(DEVICE) 
 BATCH_SIZE = 1
+DIMENSION = '3d'
 
 def pred_image(data, model = MODEL):
         model.eval()
@@ -53,6 +54,7 @@ def main():
     output = []
 
     loader = get_loaders(
+        DIMENSION,
         sys.argv[2],
         sys.argv[2],
         BATCH_SIZE,
@@ -85,20 +87,19 @@ def main():
     # 0,1 1,0
     # 0,2 1,1 2,0
     output.append(megaOutput[0,0])
-    output.append(np.mean(megaOutput[0,1], megaOutput[1,0]))
-    output.append(np.mean(megaOutput[0,2], megaOutput[1,1], megaOutput[2,0]))
+    output.append(np.mean([megaOutput[0,1], megaOutput[1,0]], axis=0))
+    output.append(np.mean([megaOutput[0,2], megaOutput[1,1], megaOutput[2,0]], axis = 0))
 
     # 0,3 1,2 2,1 3,0
     # 1,3 2,2 3,1 4,0
     # 2,3 3,2 4,1 5,0
     # ...
     for i in range(megaOutput.shape[0] - 6):
-        output.append(np.mean(megaOutput[i,3], megaOutput[i+1, 2],
-                                   megaOutput[i+2,1], megaOutput[i+3,0]))
+        output.append(np.mean([megaOutput[i,3], megaOutput[i+1, 2], megaOutput[i+2,1], megaOutput[i+3,0]], axis = 0))
         
-    output.append(np.mean(megaOutput[l-3, 3], megaOutput[l-2, 2], megaOutput(l-1, 1)))    
-    output.append(np.mean(megaOutput[l-2, 3], megaOutput[l-1, 2]))
-    output.append(np.mean(megaOutput[l-1, 3]))
+    output.append(np.mean([megaOutput[l-3, 3], megaOutput[l-2, 2], megaOutput[l-1, 1]], axis = 0))    
+    output.append(np.mean([megaOutput[l-2, 3], megaOutput[l-1, 2]], axis = 0))
+    output.append(megaOutput[l-1, 3])
     # 3,3 4,2 5,1
     # 4,3 5,2 
     # 5,3
@@ -108,6 +109,9 @@ def main():
     # normalize 0-255
     megaOutput = (megaOutput - np.min(megaOutput)) / (np.max(megaOutput) - np.min(megaOutput)) * 255
     
+    megaOutput = np.resize(megaOutput, (920, 836, 836))
+    print(megaOutput.shape)
+
     # Create a new DICOM dataset
     dataset = Dataset()
 
@@ -121,11 +125,11 @@ def main():
     dataset.is_implicit_VR = False
 
     # Set image-related DICOM attributes
-    dataset.Rows = megaOutput.shape[2]
-    dataset.Columns = megaOutput.shape[3]
+    dataset.Rows = megaOutput.shape[1]
+    dataset.Columns = megaOutput.shape[2]
     dataset.BitsAllocated = 8
     dataset.SamplesPerPixel = 1
-    dataset.NumberOfFrames = megaOutput.shape[0] * megaOutput.shape[1]
+    dataset.NumberOfFrames = megaOutput.shape[0] 
     dataset.PixelData = megaOutput.astype(np.uint8).tobytes()
  
     # Save the DICOM dataset to a file
