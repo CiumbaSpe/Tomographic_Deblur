@@ -19,7 +19,7 @@ from utils.utils import (
 LEARNING_RATE = 1e-3
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = 1
-NUM_EPOCHS = 20
+NUM_EPOCHS = 15
 NUM_WORKERS = 1
 TRAIN_DIR_X = '../SeeTrough/gigadose/trainIn'
 TRAIN_DIR_Y = '../SeeTrough/gigadose/trainOut'
