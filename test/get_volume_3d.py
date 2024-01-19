@@ -1,5 +1,5 @@
-# prende input [rete] [dataset] [nome_file_output.tif]
-# data una rete e un file .tif ritorna in output
+# prende input [rete] [dataset] [nome_file_output.dcm]
+# data una rete e un file .dcm ritorna in output
 
 import sys
 import os
@@ -64,14 +64,14 @@ def main():
 
     # RUNNING TROUGH ALL THE BATCHES
     MODEL.eval()
-    for batch_idx, (data, targets, idx) in enumerate(loop):
-        print(idx)
-        if(idx != False):
-            data = torch.unsqueeze(data, 1).to(device = DEVICE)
-            if(data.shape[2] == 4): # should prevent downsizing to 0
-                pred = pred_image(data)
-                # pred = (pred - np.min(pred)) / (np.max(pred) - np.min(pred)) * 255
-                output.append(pred)
+    for batch_idx, (data, targets) in enumerate(loop):
+        # print(idx)
+        # if(idx != False):
+        data = torch.unsqueeze(data, 1).to(device = DEVICE)
+        if(data.shape[2] == 4): # should prevent downsizing to 0
+            pred = pred_image(data)
+            # pred = (pred - np.min(pred)) / (np.max(pred) - np.min(pred)) * 255
+            output.append(pred)
                 # cont += 1
                 # if cont == 10:
                 #     break
@@ -115,11 +115,10 @@ def main():
     dataset.PatientName = "Tom"
     dataset.PatientID = "123456"
     dataset.Modality = "CT"
-    # dataset.SeriesInstanceUID = UID.generate_uid()
 
     # Set the transfer syntax
     dataset.is_little_endian = True
-    dataset.is_implicit_VR = True
+    dataset.is_implicit_VR = False
 
     # Set image-related DICOM attributes
     dataset.Rows = megaOutput.shape[2]
@@ -128,7 +127,7 @@ def main():
     dataset.SamplesPerPixel = 1
     dataset.NumberOfFrames = megaOutput.shape[0] * megaOutput.shape[1]
     dataset.PixelData = megaOutput.astype(np.uint8).tobytes()
-
+ 
     # Save the DICOM dataset to a file
     filename = sys.argv[3]
     pydicom.filewriter.write_file(filename, dataset)
