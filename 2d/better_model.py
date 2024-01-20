@@ -14,6 +14,29 @@ class DoubleConv(nn.Module):
 
     def forward(self, x):
         return self.conv(x)
+    
+class AttentionGate(nn.Module):
+    def __init__(self, in_c, out_c):
+        super().__init__()
+
+        self.skip_conv = nn.Conv2d(in_c, out_c, kernel_size=1, padding=0),
+        self.gating_signal_conv = nn.Conv2d(out_c, out_c, kernel_size=1, padding=0),
+
+        self.relu = nn.ReLU(inplace=True)
+        self.output = nn.Sequential(
+            nn.Conv2d(out_c, out_c, kernel_size=1, padding=0),
+            nn.Sigmoid()
+        )
+
+    def forward(self, g, s):
+        print(g.shape)
+        print(s.shape)
+        Wg = self.Wg(g)
+        Ws = self.Ws(s)
+        out = self.relu(Wg + Ws)
+        out = self.output(out)
+        return out * s
+
 
 class ResUnet2d(nn.Module):
     def __init__(
@@ -22,6 +45,7 @@ class ResUnet2d(nn.Module):
         super(ResUnet2d, self).__init__()
         self.ups = nn.ModuleList()
         self.downs = nn.ModuleList()
+        self.attention_gates = nn.ModuleList()
         self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
 
         # Down part of UNET
@@ -37,6 +61,9 @@ class ResUnet2d(nn.Module):
                 )
             )
             self.ups.append(DoubleConv(feature*2, feature))
+
+        for feature in reversed(features[1:]):
+            self.attention_gates.append(AttentionGate(feature, feature*2)) 
 
         self.bottleneck = DoubleConv(features[-1], features[-1]*2)
         self.final_conv = nn.Conv2d(features[0], out_channels, kernel_size=1)
@@ -55,13 +82,23 @@ class ResUnet2d(nn.Module):
         skip_connections = skip_connections[::-1]
 
         for idx in range(0, len(self.ups), 2):
+
+            gating_signal = x
+
             x = self.ups[idx](x)
             skip_connection = skip_connections[idx//2]
 
             if x.shape != skip_connection.shape:
                x = TF.resize(x, size=skip_connection.shape[2:])
 
-            concat_skip = torch.cat((skip_connection, x), dim=1)
+            print(self.attention_gates)
+            print(gating_signal.shape)
+            print(skip_connection.shape)
+
+
+            attention_out = self.attention_gates[idx//2](gating_signal, skip_connection)
+
+            concat_skip = torch.cat((attention_out, x), dim=1)
             x = self.ups[idx+1](concat_skip)
 
         x = self.final_conv(x)
@@ -82,7 +119,7 @@ def get_n_params(model):
 
 def test():
     x = torch.randn((1, 1, 836, 836))
-    model = UNET_2d(in_channels=1, out_channels=1)
+    model = ResUnet2d(in_channels=1, out_channels=1)
     preds = model(x)
     print(preds.shape)
     print(x.shape)
