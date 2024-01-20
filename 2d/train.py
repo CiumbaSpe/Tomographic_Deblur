@@ -11,6 +11,7 @@ sys.path.insert(0, '../')
 from earlyStopping import EarlyStopping
 from model import UNET_2d
 from model import UNET_2d_noSkip
+from better_model import ResUnet2d
 from tqdm import tqdm
 from utils.utils import (
     load_checkpoint,
@@ -25,9 +26,9 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = 4
 NUM_EPOCHS = 20
 NUM_WORKERS = 1
-TRAIN_DIR_X = '../SeeTrough/undersample/240_trainIn'
-TRAIN_DIR_Y = '../SeeTrough/undersample/trainOut'
-TRAIN_NAME = "240_undersample"
+TRAIN_DIR_X = '../SeeTrough/gigadose/trainIn'
+TRAIN_DIR_Y = '../SeeTrough/gigadose/trainOut'
+TRAIN_NAME = "gigadose_2d_noBatchN"
 DIMENSION = '2d'
 
 # VAL_DIR_X = 'new_mayo/FBPB/mayo_val/'
@@ -76,7 +77,7 @@ def main():
     torch.backends.cudnn.benchmark =  True
     torch.backends.cudnn.enabled =  True
 
-    model = UNET_2d(in_channels=1, out_channels=1).to(DEVICE)
+    model = ResUnet2d(in_channels=1, out_channels=1).to(DEVICE)
     loss_fn = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr = LEARNING_RATE)
     es = EarlyStopping()
