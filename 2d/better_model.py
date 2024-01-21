@@ -40,11 +40,11 @@ class AttentionGate(nn.Module):
         return out * gating_signal
 
 
-class ResUnet2d(nn.Module):
+class Res_AttentionUnet2d(nn.Module):
     def __init__(
             self, in_channels=1, out_channels=1, features=[64, 128, 256],
     ):
-        super(ResUnet2d, self).__init__()
+        super(Res_AttentionUnet2d, self).__init__()
         self.ups = nn.ModuleList()
         self.downs = nn.ModuleList()
         self.attention_gates = nn.ModuleList()
@@ -104,6 +104,74 @@ class ResUnet2d(nn.Module):
 
         #ritorno input sommato all'output
         return x + save_input
+
+class ResUnet2d(nn.Module):
+    def __init__(
+            self, in_channels=1, out_channels=1, features=[64, 128, 256],
+    ):
+        super(ResUnet2d, self).__init__()
+        self.ups = nn.ModuleList()
+        self.downs = nn.ModuleList()
+        self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
+
+        # Down part of UNET
+        for feature in features:
+            self.downs.append(DoubleConv(in_channels, feature))
+            in_channels = feature
+
+        # Up part of UNET
+        for feature in reversed(features):
+            self.ups.append(
+                nn.ConvTranspose2d(
+                    feature*2, feature, kernel_size=2, stride=2,
+                )
+            )
+            self.ups.append(DoubleConv(feature*2, feature))
+
+        self.bottleneck = DoubleConv(features[-1], features[-1]*2)
+        self.final_conv = nn.Conv2d(features[0], out_channels, kernel_size=1)
+
+    def forward(self, x):
+        skip_connections = []
+
+        save_input = x
+
+        for down in self.downs:
+            residual = x
+            x = down(x)
+            x = x + residual
+            skip_connections.append(x)
+            x = self.pool(x)
+ 
+        x = self.bottleneck(x)
+        skip_connections = skip_connections[::-1]
+
+        for idx in range(0, len(self.ups), 2):
+
+            x = self.ups[idx](x)
+            skip_connection = skip_connections[idx//2]
+
+            residual = x
+
+            if x.shape != skip_connection.shape:
+               x = TF.resize(x, size=skip_connection.shape[2:])
+
+            # print(self.attention_gates)
+            # print(x.shape)
+            # print(skip_connection.shape)
+
+            concat_skip = torch.cat((skip_connection, x), dim=1)
+            x = self.ups[idx+1](concat_skip)
+
+            x = x + residual
+
+        x = self.final_conv(x)
+        m = nn.Tanh()
+        x = m(x)
+
+        #ritorno input sommato all'output
+        return x + save_input
+
 
 def get_n_params(model):
     pp=0
