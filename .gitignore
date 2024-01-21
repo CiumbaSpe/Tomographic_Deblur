@@ -1,4 +1,4 @@
-log_train*
+log_*
 test_out*
 net_result
 *.sbatch
