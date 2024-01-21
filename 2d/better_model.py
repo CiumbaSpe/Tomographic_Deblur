@@ -93,8 +93,7 @@ class ResUnet2d(nn.Module):
             # print(x.shape)
             # print(skip_connection.shape)
 
-            if(idx < len(self.ups) - 1):
-                attention_out = self.attention_gates[idx//2](x, skip_connection)
+            attention_out = self.attention_gates[idx//2](x, skip_connection)
 
             concat_skip = torch.cat((attention_out, x), dim=1)
             x = self.ups[idx+1](concat_skip)
