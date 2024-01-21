@@ -16,26 +16,28 @@ class DoubleConv(nn.Module):
         return self.conv(x)
     
 class AttentionGate(nn.Module):
-    def __init__(self, in_c, out_c):
-        super().__init__()
+    def __init__(self, in_c):
+        super(AttentionGate, self).__init__()
 
-        self.skip_conv = nn.Conv2d(in_c, out_c, kernel_size=1, padding=0),
-        self.gating_signal_conv = nn.Conv2d(out_c, out_c, kernel_size=1, padding=0),
+        self.skip_conv = nn.Conv2d(in_c, in_c, kernel_size=1, padding=0)
+        self.gating_signal_conv = nn.Conv2d(in_c, in_c, kernel_size=1, padding=0)
 
         self.relu = nn.ReLU(inplace=True)
         self.output = nn.Sequential(
-            nn.Conv2d(out_c, out_c, kernel_size=1, padding=0),
+            nn.Conv2d(in_c, in_c, kernel_size=1, padding=0),
             nn.Sigmoid()
         )
 
-    def forward(self, g, s):
-        print(g.shape)
-        print(s.shape)
-        Wg = self.Wg(g)
-        Ws = self.Ws(s)
-        out = self.relu(Wg + Ws)
+    def forward(self, gating_signal, skip_connection):
+        # print(gating_signal.shape)
+        # print(skip_connection.shape)
+        input = self.skip_conv(skip_connection)
+        gs = self.gating_signal_conv(gating_signal)
+        # print(input.shape)
+        # print(gs.shape)
+        out = self.relu(input + gs)
         out = self.output(out)
-        return out * s
+        return out * gating_signal
 
 
 class ResUnet2d(nn.Module):
@@ -61,9 +63,7 @@ class ResUnet2d(nn.Module):
                 )
             )
             self.ups.append(DoubleConv(feature*2, feature))
-
-        for feature in reversed(features[1:]):
-            self.attention_gates.append(AttentionGate(feature, feature*2)) 
+            self.attention_gates.append(AttentionGate(feature)) 
 
         self.bottleneck = DoubleConv(features[-1], features[-1]*2)
         self.final_conv = nn.Conv2d(features[0], out_channels, kernel_size=1)
@@ -83,20 +83,18 @@ class ResUnet2d(nn.Module):
 
         for idx in range(0, len(self.ups), 2):
 
-            gating_signal = x
-
             x = self.ups[idx](x)
             skip_connection = skip_connections[idx//2]
 
             if x.shape != skip_connection.shape:
                x = TF.resize(x, size=skip_connection.shape[2:])
 
-            print(self.attention_gates)
-            print(gating_signal.shape)
-            print(skip_connection.shape)
+            # print(self.attention_gates)
+            # print(x.shape)
+            # print(skip_connection.shape)
 
-
-            attention_out = self.attention_gates[idx//2](gating_signal, skip_connection)
+            if(idx < len(self.ups) - 1):
+                attention_out = self.attention_gates[idx//2](x, skip_connection)
 
             concat_skip = torch.cat((attention_out, x), dim=1)
             x = self.ups[idx+1](concat_skip)
