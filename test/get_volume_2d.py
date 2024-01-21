@@ -14,13 +14,14 @@ sys.path.insert(0, '../2d')
 
 from pydicom.dataset import Dataset
 from model import UNET_2d
+from better_model import ResUnet2d
 import torch
 from utils.utils import (
     load_checkpoint
 )
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-MODEL = UNET_2d(in_channels=1, out_channels=1).to(DEVICE) 
+MODEL = ResUnet2d(in_channels=1, out_channels=1).to(DEVICE) 
 
 
 def pred_image(image, model = MODEL):
