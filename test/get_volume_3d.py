@@ -13,6 +13,7 @@ sys.path.insert(0, '../3d')
 
 from pydicom.dataset import Dataset
 from model_3d import UNET_3d
+from better_model_3d import ResUnet3d
 from tqdm import tqdm
 import torch
 from utils.utils import (
@@ -20,7 +21,7 @@ from utils.utils import (
 )
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-MODEL = UNET_3d(in_channels=1, out_channels=1).to(DEVICE) 
+MODEL = ResUnet3d(in_channels=1, out_channels=1).to(DEVICE) 
 BATCH_SIZE = 1
 DIMENSION = '3d'
 
