@@ -108,7 +108,7 @@ def main():
     megaOutput = np.stack(output)
 
     # normalize 0-255
-    megaOutput = (megaOutput - np.min(megaOutput)) / (np.max(megaOutput) - np.min(megaOutput)) * 255
+    megaOutput = (megaOutput - np.min(megaOutput)) / (np.max(megaOutput) - np.min(megaOutput)) * 4095
     
     megaOutput = np.resize(megaOutput, (920, 836, 836))
     print(megaOutput.shape)
@@ -128,10 +128,10 @@ def main():
     # Set image-related DICOM attributes
     dataset.Rows = megaOutput.shape[1]
     dataset.Columns = megaOutput.shape[2]
-    dataset.BitsAllocated = 8
+    dataset.BitsAllocated = 16
     dataset.SamplesPerPixel = 1
     dataset.NumberOfFrames = megaOutput.shape[0] 
-    dataset.PixelData = megaOutput.astype(np.uint8).tobytes()
+    dataset.PixelData = megaOutput.astype(np.uint16).tobytes()
  
     # Save the DICOM dataset to a file
     filename = sys.argv[3]
