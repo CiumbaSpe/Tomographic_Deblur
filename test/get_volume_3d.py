@@ -21,7 +21,7 @@ from utils.utils import (
 )
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-MODEL = ResUnet3d(in_channels=1, out_channels=1).to(DEVICE) 
+MODEL = UNET_3d(in_channels=1, out_channels=1).to(DEVICE) 
 BATCH_SIZE = 1
 DIMENSION = '3d'
 
