@@ -4,14 +4,16 @@
 import sys
 import os
 import numpy as np
-import pydicom
 import tqdm
 
 import sys
 sys.path.insert(0, '../')
 sys.path.insert(0, '../3d')
 
-from pydicom.dataset import Dataset
+import pydicom
+from pydicom.dataset import Dataset, FileMetaDataset
+from pydicom.uid import UID, ExplicitVRLittleEndian
+
 from model_3d import UNET_3d
 from better_model_3d import ResUnet3d
 from tqdm import tqdm
@@ -75,9 +77,9 @@ def main():
             pred = pred_image(data)
             # pred = (pred - np.min(pred)) / (np.max(pred) - np.min(pred)) * 255
             output.append(pred)
-                # cont += 1
-                # if cont == 10:
-                #     break
+            # cont += 1
+            # if cont == 10:
+            #     break
 
     megaOutput = np.stack(output)
 
@@ -109,12 +111,12 @@ def main():
 
     # normalize 0-255
     megaOutput = (megaOutput - np.min(megaOutput)) / (np.max(megaOutput) - np.min(megaOutput)) * 4095
-    
+    megaOutput = np.resize(megaOutput, (920, 836, 836))
+
+    megaOutput = megaOutput.astype(np.uint16)
+    print(megaOutput.shape)
     print(np.min(megaOutput))
     print(np.max(megaOutput))
-
-    megaOutput = np.resize(megaOutput, (920, 836, 836))
-    print(megaOutput.shape)
 
     # Create a new DICOM dataset
     dataset = Dataset()
@@ -124,21 +126,43 @@ def main():
     dataset.PatientID = "123456"
     dataset.Modality = "CT"
 
+    file_meta = FileMetaDataset()
+    file_meta.MediaStorageSOPClassUID = UID("1.2.840.10008.5.1.4.1.1.2")
+    file_meta.MediaStorageSOPInstanceUID = UID("1.2.3")
+    file_meta.ImplementationClassUID = UID("1.2.3.4")
+    file_meta.TransferSyntaxUID = ExplicitVRLittleEndian
+
+    # Add the file meta information
+    dataset.file_meta = file_meta
+
     # Set the transfer syntax
     dataset.is_little_endian = True
-    dataset.is_implicit_VR = False
+    dataset.is_implicit_VR = True
 
     # Set image-related DICOM attributes
+    dataset.PixelSpacing = [0.12, 0.12]
+    # dataset.PixelSpacing = 0.12
     dataset.Rows = megaOutput.shape[1]
     dataset.Columns = megaOutput.shape[2]
     dataset.BitsAllocated = 16
     dataset.SamplesPerPixel = 1
     dataset.NumberOfFrames = megaOutput.shape[0] 
-    dataset.PixelData = megaOutput.astype(np.uint16).tobytes()
+
+    dataset.PixelRepresentation = 0
+    dataset.HighBit = 15
+    dataset.BitsStored = 16
+    # dataset.SmallestImagePixelValue = np.min(megaOutput)
+    # dataset.LargestImagePixelValue = np.max(megaOutput)
+    dataset.PixelData = megaOutput.tobytes()
+
  
     # Save the DICOM dataset to a file
     filename = sys.argv[3]
-    pydicom.filewriter.write_file(filename, dataset)
+    # dataset.PixelData = pixel_array.tostring()
+
+    # dataset.save_as('gio.dcm')
+
+    pydicom.filewriter.dcmwrite(filename, dataset)
 
     return 0 
 
