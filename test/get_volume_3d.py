@@ -110,6 +110,9 @@ def main():
     # normalize 0-255
     megaOutput = (megaOutput - np.min(megaOutput)) / (np.max(megaOutput) - np.min(megaOutput)) * 4095
     
+    print(np.min(megaOutput))
+    print(np.max(megaOutput))
+
     megaOutput = np.resize(megaOutput, (920, 836, 836))
     print(megaOutput.shape)
 
