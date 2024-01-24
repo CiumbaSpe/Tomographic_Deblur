@@ -17,7 +17,7 @@ class DoubleConv(nn.Module):
 
 class ResUnet3d(nn.Module):
     def __init__(
-            self, in_channels=1, out_channels=1, features=[128, 256],
+            self, in_channels=1, out_channels=1, features=[64, 128],
     ):
         super(ResUnet3d, self).__init__()
         self.ups = nn.ModuleList()
