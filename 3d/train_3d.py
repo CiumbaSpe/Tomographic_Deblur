@@ -20,11 +20,11 @@ from utils.utils import (
 LEARNING_RATE = 1e-3
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = 1
-NUM_EPOCHS = 10
+NUM_EPOCHS = 5
 NUM_WORKERS = 1
 TRAIN_DIR_X = '../SeeTrough/undersample/120_trainIn'
 TRAIN_DIR_Y = '../SeeTrough/undersample/trainOut'
-TRAIN_NAME = "gigadose_3d_noBN"
+TRAIN_NAME = "120_3d"
 DIMENSION = '3d'
 # VAL_DIR_X = 'new_mayo/FBPB/mayo_val/'
 # VAL_DIR_Y = 'new_mayo/GT/mayo_val/' 
@@ -71,7 +71,7 @@ def main():
     torch.backends.cudnn.benchmark =  True
     torch.backends.cudnn.enabled =  True
 
-    model = ResUnet3d(in_channels=1, out_channels=1).to(DEVICE)
+    model = UNET_3d(in_channels=1, out_channels=1).to(DEVICE)
     loss_fn = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr = LEARNING_RATE)
     es = EarlyStopping()

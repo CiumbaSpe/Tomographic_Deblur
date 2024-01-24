@@ -137,9 +137,7 @@ class ResUnet2d(nn.Module):
         save_input = x
 
         for down in self.downs:
-            residual = x
             x = down(x)
-            x = x + residual
             skip_connections.append(x)
             x = self.pool(x)
  
@@ -151,8 +149,6 @@ class ResUnet2d(nn.Module):
             x = self.ups[idx](x)
             skip_connection = skip_connections[idx//2]
 
-            residual = x
-
             if x.shape != skip_connection.shape:
                x = TF.resize(x, size=skip_connection.shape[2:])
 
@@ -163,7 +159,6 @@ class ResUnet2d(nn.Module):
             concat_skip = torch.cat((skip_connection, x), dim=1)
             x = self.ups[idx+1](concat_skip)
 
-            x = x + residual
 
         x = self.final_conv(x)
         m = nn.Tanh()
