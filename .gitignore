@@ -12,6 +12,7 @@ weights
 undersample_dataset
 gigadose_dataset
 *.dcm
+*.png
 *.tif
 *.npy
 volume_out*
