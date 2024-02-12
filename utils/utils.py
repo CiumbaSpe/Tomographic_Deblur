@@ -49,7 +49,7 @@ def get_loaders(
         batch_size=batch_size,
         num_workers=num_workers,
         pin_memory=pin_memory,
-        shuffle=shuffle, # if in 2d shuffle in 3d no shuffle
+        shuffle=shuffle, 
     )
 
     # val_ds = MayoDataset(
