@@ -21,14 +21,14 @@ from utils.utils import (
 
 # HYPERPARAMETERS
 
-LEARNING_RATE = 1e-3
+LEARNING_RATE = 1e-4
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = 4
 NUM_EPOCHS = 20
 NUM_WORKERS = 1
-TRAIN_DIR_X = '../SeeTrough/gigadose/trainIn'
-TRAIN_DIR_Y = '../SeeTrough/gigadose/trainOut'
-TRAIN_NAME = "gigadose_2d_attention"
+TRAIN_DIR_X = '../SeeTrough/gigadose/JTS/trainIn'
+TRAIN_DIR_Y = '../SeeTrough/gigadose/JTS/trainOut'
+TRAIN_NAME = "giga_NoSkip_2d"
 DIMENSION = '2d'
 
 # VAL_DIR_X = 'new_mayo/FBPB/mayo_val/'
@@ -77,7 +77,7 @@ def main():
     torch.backends.cudnn.benchmark =  True
     torch.backends.cudnn.enabled =  True
 
-    model = ResUnet2d(in_channels=1, out_channels=1).to(DEVICE)
+    model = UNET_2d_noSkip(in_channels=1, out_channels=1).to(DEVICE)
     loss_fn = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr = LEARNING_RATE)
     es = EarlyStopping()

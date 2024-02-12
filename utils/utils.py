@@ -42,7 +42,7 @@ def get_loaders(
             img_dir_y=train_y,
             # transform=train_transform,
         )
-        shuffle = False
+        shuffle = True
 
     train_loader = DataLoader(
         train_ds,
