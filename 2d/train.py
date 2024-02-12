@@ -28,7 +28,7 @@ NUM_EPOCHS = 20
 NUM_WORKERS = 1
 TRAIN_DIR_X = '../SeeTrough/gigadose/JTS/trainIn'
 TRAIN_DIR_Y = '../SeeTrough/gigadose/JTS/trainOut'
-TRAIN_NAME = "giga_NoSkip_2d"
+TRAIN_NAME = "giga_2d"
 DIMENSION = '2d'
 
 # VAL_DIR_X = 'new_mayo/FBPB/mayo_val/'
