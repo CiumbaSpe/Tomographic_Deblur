@@ -182,7 +182,7 @@ def test():
     model = ResUnet2d(in_channels=1, out_channels=1)
     preds = model(x)
     print(preds.shape)
-    print(x.shape)
+    print(x.shape)  
     
     print(get_n_params(model))
 
