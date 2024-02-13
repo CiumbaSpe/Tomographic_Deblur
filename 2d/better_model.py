@@ -15,6 +15,26 @@ class DoubleConv(nn.Module):
     def forward(self, x):
         return self.conv(x)
     
+class DoubleConvRes(nn.Module):
+    def __init__(self, in_channels, out_channels):
+        super(DoubleConvRes, self).__init__()
+        self.conv1 = nn.Sequential(
+            nn.Conv2d(in_channels, out_channels, 3, 1, 1, bias=False),
+            nn.ReLU(inplace=True),
+        )
+        self.conv2 = nn.Sequential(
+            nn.Conv2d(out_channels, out_channels, 3, 1, 1, bias=False),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(out_channels, out_channels, 3, 1, 1, bias=False),
+            nn.ReLU(inplace=True),
+        )
+
+    def forward(self, x):
+        x = self.conv1(x)
+        save_x = x
+        x = self.conv2(x)
+        return x + save_x
+    
 class AttentionGate(nn.Module):
     def __init__(self, in_c):
         super(AttentionGate, self).__init__()
@@ -167,6 +187,67 @@ class ResUnet2d(nn.Module):
         #ritorno input sommato all'output
         return x + save_input
 
+class FullResUnet2d(nn.Module):
+    def __init__(
+            self, in_channels=1, out_channels=1, features=[64, 128, 256],
+    ):
+        super(FullResUnet2d, self).__init__()
+        self.ups = nn.ModuleList()
+        self.downs = nn.ModuleList()
+        self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
+
+        # Down part of UNET
+        for feature in features:
+            self.downs.append(DoubleConvRes(in_channels, feature))
+            in_channels = feature
+
+        # Up part of UNET
+        for feature in reversed(features):
+            self.ups.append(
+                nn.ConvTranspose2d(
+                    feature*2, feature, kernel_size=2, stride=2,
+                )
+            )
+            self.ups.append(DoubleConvRes(feature*2, feature))
+
+        self.bottleneck = DoubleConvRes(features[-1], features[-1]*2)
+        self.final_conv = nn.Conv2d(features[0], out_channels, kernel_size=1)
+
+    def forward(self, x):
+        skip_connections = []
+
+        save_input = x
+
+        for down in self.downs:
+            x = down(x)
+            skip_connections.append(x)
+            x = self.pool(x)
+ 
+        x = self.bottleneck(x)
+        skip_connections = skip_connections[::-1]
+
+        for idx in range(0, len(self.ups), 2):
+
+            x = self.ups[idx](x)
+            skip_connection = skip_connections[idx//2]
+
+            if x.shape != skip_connection.shape:
+               x = TF.resize(x, size=skip_connection.shape[2:])
+
+            # print(self.attention_gates)
+            # print(x.shape)
+            # print(skip_connection.shape)
+
+            concat_skip = torch.cat((skip_connection, x), dim=1)
+            x = self.ups[idx+1](concat_skip)
+
+
+        x = self.final_conv(x)
+        m = nn.Tanh()
+        x = m(x)
+
+        #ritorno input sommato all'output
+        return x + save_input
 
 def get_n_params(model):
     pp=0
@@ -179,7 +260,7 @@ def get_n_params(model):
 
 def test():
     x = torch.randn((1, 1, 836, 836))
-    model = ResUnet2d(in_channels=1, out_channels=1)
+    model = FullResUnet2d(in_channels=1, out_channels=1)
     preds = model(x)
     print(preds.shape)
     print(x.shape)  
