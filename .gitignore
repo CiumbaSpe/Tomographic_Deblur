@@ -15,5 +15,6 @@ gigadose_dataset
 *.png
 *.tif
 *.npy
+trainTesi
 volume_out*
 .vscode
