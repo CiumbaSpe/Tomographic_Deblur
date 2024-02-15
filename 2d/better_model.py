@@ -216,7 +216,7 @@ class FullResUnet2d(nn.Module):
     def forward(self, x):
         skip_connections = []
 
-        save_input = x
+        #save_input = x
 
         for down in self.downs:
             x = down(x)
@@ -243,11 +243,12 @@ class FullResUnet2d(nn.Module):
 
 
         x = self.final_conv(x)
-        m = nn.Tanh()
+        m = nn.ReLU()
         x = m(x)
 
         #ritorno input sommato all'output
-        return x + save_input
+        #return x + save_input
+        return x
 
 def get_n_params(model):
     pp=0

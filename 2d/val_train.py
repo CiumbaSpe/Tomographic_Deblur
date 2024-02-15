@@ -27,14 +27,13 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = 4
 NUM_EPOCHS = 20
 NUM_WORKERS = 1
-TRAIN_DIR_X = '../SeeTrough/gigadose/JTS/trainIn'
-TRAIN_DIR_Y = '../SeeTrough/gigadose/JTS/trainOut'
-TRAIN_NAME = "giga_FullNotnhNoskip"
+TRAIN_DIR_X = '../SeeTrough/gigadose/JTS_val/trainIn'
+TRAIN_DIR_Y = '../SeeTrough/gigadose/JTS_val/trainOut'
+TRAIN_NAME = "Validation"
 DIMENSION = '2d'
-MODEL = FullResUnet2d(in_channels=1, out_channels=1).to(DEVICE)
 
-# VAL_DIR_X = 'new_mayo/FBPB/mayo_val/'
-# VAL_DIR_Y = 'new_mayo/GT/mayo_val/' 
+VAL_DIR_X = '../SeeTrough/gigadose/JTS_val/x_val'
+VAL_DIR_Y = '../SeeTrough/gigadose/JTS_val/y_val' 
 
 # TRAIN
 
@@ -80,8 +79,7 @@ def main():
     torch.backends.cudnn.benchmark =  True
     torch.backends.cudnn.enabled =  True
 
-    model = MODEL
-
+    model = FullResUnet2d(in_channels=1, out_channels=1).to(DEVICE)
     loss_fn = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr = LEARNING_RATE)
     es = EarlyStopping()
