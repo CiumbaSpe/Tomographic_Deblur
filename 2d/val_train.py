@@ -37,7 +37,7 @@ VAL_DIR_Y = '../SeeTrough/gigadose/JTS_val/y_val'
 
 # TRAIN
 
-def train(loader, model, optimizer, loss_fn, scaler):
+def train(loader, val_loader, model, optimizer, loss_fn, scaler):
     loop = tqdm(loader) 
 
     model.train()
@@ -68,7 +68,24 @@ def train(loader, model, optimizer, loss_fn, scaler):
 
         loop.set_postfix(loss = loss.item())
     
-    return save_loss/cont
+    # END OF EPOCH, USE VALIDATE SET TO MONITORIZE OVERFITTING
+    model.eval()
+    cont_val = 0
+    loss_sum = 0
+    for idx, (x, y) in enumerate(val_loader):
+        x = torch.unsqueeze(x, 1).to(device = DEVICE)
+        y = torch.unsqueeze(y, 1).to(device = DEVICE)
+    
+        with torch.no_grad():
+            preds = model(x)
+            vloss = loss_fn(preds.float(), y.float())
+            # loop.set_description(f"vloss: {vloss:>7f}, {es.status}")
+
+        cont_val += 1
+        loss_sum += vloss.item()
+
+
+    return save_loss/cont, loss_sum/cont_val
 
 
 def main():
@@ -95,17 +112,27 @@ def main():
         # train_transform
     )
 
+    val_loader = get_loaders(
+        DIMENSION,
+        VAL_DIR_X,
+        VAL_DIR_Y,
+        BATCH_SIZE
+    )
+
     scaler = torch.cuda.amp.GradScaler()
 
     save_loss = np.empty(0, dtype=np.float32)
+    save_val = np.empty(0, dtype=np.float32)
 
     for epoch in range(NUM_EPOCHS):
         print(f"epoch: ({epoch})")
-        average_loss = train(train_loader, model, optimizer, loss_fn, scaler)
+        average_loss, val_loss = train(train_loader, val_loader, model, optimizer, loss_fn, scaler)
         save_loss = np.append(save_loss, average_loss)
+        save_val = np.append(save_val, val_loss)
 
 
     np.save(TRAIN_NAME, save_loss)
+    np.save(TRAIN_NAME+"_val", save_val)
 
 
     # Save model
