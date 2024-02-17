@@ -29,9 +29,9 @@ NUM_EPOCHS = 20
 NUM_WORKERS = 1
 TRAIN_DIR_X = '../SeeTrough/gigadose/JTS/trainIn'
 TRAIN_DIR_Y = '../SeeTrough/gigadose/JTS/trainOut'
-TRAIN_NAME = "giga_res"
+TRAIN_NAME = "gigaWTF"
 DIMENSION = '2d'
-MODEL = ResUnet2d(in_channels=1, out_channels=1).to(DEVICE)
+MODEL = UNET_2d_noSkip(in_channels=1, out_channels=1).to(DEVICE)
 
 # VAL_DIR_X = 'new_mayo/FBPB/mayo_val/'
 # VAL_DIR_Y = 'new_mayo/GT/mayo_val/' 
