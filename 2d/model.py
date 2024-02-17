@@ -102,7 +102,7 @@ class UNET_2d_noSkip(nn.Module):
     def forward(self, x):
         skip_connections = []
 
-        save_input = x
+        #save_input = x
 
         for down in self.downs:
             x = down(x)
@@ -127,7 +127,8 @@ class UNET_2d_noSkip(nn.Module):
         x = m(x)
 
         #ritorno input sommato all'output
-        return save_input + x
+        #return save_input + x
+        return x
 
 def get_n_params(model):
     pp=0
@@ -136,6 +137,7 @@ def get_n_params(model):
         for s in list(p.size()):
             nn = nn*s
         pp += nn
+    
     return pp
 
 def test():

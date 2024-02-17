@@ -15,6 +15,21 @@ class DoubleConv(nn.Module):
     def forward(self, x):
         return self.conv(x)
     
+class TripleConv(nn.Module):
+    def __init__(self, in_channels, out_channels):
+        super(TripleConv, self).__init__()
+        self.conv = nn.Sequential(
+            nn.Conv2d(in_channels, out_channels, 3, 1, 1, bias = False),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(out_channels, out_channels, 3, 1, 1, bias = False),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(out_channels, out_channels, 3, 1, 1, bias = False),
+            nn.ReLU(inplace=True),
+        )
+
+    def forward(self, x):
+        return self.conv(x)
+
 class DoubleConvRes(nn.Module):
     def __init__(self, in_channels, out_channels):
         super(DoubleConvRes, self).__init__()
@@ -26,14 +41,15 @@ class DoubleConvRes(nn.Module):
             nn.Conv2d(out_channels, out_channels, 3, 1, 1, bias=False),
             nn.ReLU(inplace=True),
             nn.Conv2d(out_channels, out_channels, 3, 1, 1, bias=False),
-            nn.ReLU(inplace=True),
+            #nn.ReLU(inplace=True),
         )
+        self.activate = nn.ReLU(inplace=True)
 
     def forward(self, x):
         x = self.conv1(x)
         save_x = x
         x = self.conv2(x)
-        return x + save_x
+        return self.activate(x + save_x)
     
 class AttentionGate(nn.Module):
     def __init__(self, in_c):
@@ -137,6 +153,7 @@ class ResUnet2d(nn.Module):
         # Down part of UNET
         for feature in features:
             self.downs.append(DoubleConv(in_channels, feature))
+            #self.downs.append(TripleConv(in_channels, feature))
             in_channels = feature
 
         # Up part of UNET
@@ -147,8 +164,10 @@ class ResUnet2d(nn.Module):
                 )
             )
             self.ups.append(DoubleConv(feature*2, feature))
+            #self.ups.append(TripleConv(feature*2, feature))
 
         self.bottleneck = DoubleConv(features[-1], features[-1]*2)
+        #self.bottleneck = TripleConv(features[-1], features[-1]*2)
         self.final_conv = nn.Conv2d(features[0], out_channels, kernel_size=1)
 
     def forward(self, x):
@@ -216,7 +235,7 @@ class FullResUnet2d(nn.Module):
     def forward(self, x):
         skip_connections = []
 
-        #save_input = x
+        save_input = x
 
         for down in self.downs:
             x = down(x)
@@ -243,12 +262,12 @@ class FullResUnet2d(nn.Module):
 
 
         x = self.final_conv(x)
-        m = nn.ReLU()
+        m = nn.Tanh()
         x = m(x)
 
         #ritorno input sommato all'output
-        #return x + save_input
-        return x
+        return x + save_input
+        #return x
 
 def get_n_params(model):
     pp=0

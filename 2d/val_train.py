@@ -25,15 +25,16 @@ from utils.utils import (
 LEARNING_RATE = 1e-4
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = 4
-NUM_EPOCHS = 20
+NUM_EPOCHS = 100
 NUM_WORKERS = 1
 TRAIN_DIR_X = '../SeeTrough/gigadose/JTS_val/trainIn'
 TRAIN_DIR_Y = '../SeeTrough/gigadose/JTS_val/trainOut'
-TRAIN_NAME = "Validation"
+TRAIN_NAME = "val_giga_fullRes_100"
 DIMENSION = '2d'
+MODEL = FullResUnet2d(in_channels=1, out_channels=1).to(DEVICE)
 
-VAL_DIR_X = '../SeeTrough/gigadose/JTS_val/x_val'
-VAL_DIR_Y = '../SeeTrough/gigadose/JTS_val/y_val' 
+VAL_DIR_X = '../SeeTrough/gigadose/JTS_val/val_x'
+VAL_DIR_Y = '../SeeTrough/gigadose/JTS_val/val_y' 
 
 # TRAIN
 
@@ -96,7 +97,8 @@ def main():
     torch.backends.cudnn.benchmark =  True
     torch.backends.cudnn.enabled =  True
 
-    model = FullResUnet2d(in_channels=1, out_channels=1).to(DEVICE)
+    model = MODEL
+
     loss_fn = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr = LEARNING_RATE)
     es = EarlyStopping()
@@ -129,6 +131,8 @@ def main():
         average_loss, val_loss = train(train_loader, val_loader, model, optimizer, loss_fn, scaler)
         save_loss = np.append(save_loss, average_loss)
         save_val = np.append(save_val, val_loss)
+        print(average_loss)
+        print(val_loss)
 
 
     np.save(TRAIN_NAME, save_loss)

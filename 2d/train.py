@@ -29,9 +29,9 @@ NUM_EPOCHS = 20
 NUM_WORKERS = 1
 TRAIN_DIR_X = '../SeeTrough/gigadose/JTS/trainIn'
 TRAIN_DIR_Y = '../SeeTrough/gigadose/JTS/trainOut'
-TRAIN_NAME = "giga_FullNotnhNoskip"
+TRAIN_NAME = "giga_res"
 DIMENSION = '2d'
-MODEL = FullResUnet2d(in_channels=1, out_channels=1).to(DEVICE)
+MODEL = ResUnet2d(in_channels=1, out_channels=1).to(DEVICE)
 
 # VAL_DIR_X = 'new_mayo/FBPB/mayo_val/'
 # VAL_DIR_Y = 'new_mayo/GT/mayo_val/' 
@@ -105,7 +105,7 @@ def main():
         print(f"epoch: ({epoch})")
         average_loss = train(train_loader, model, optimizer, loss_fn, scaler)
         save_loss = np.append(save_loss, average_loss)
-
+        print(average_loss)
 
     np.save(TRAIN_NAME, save_loss)
 
