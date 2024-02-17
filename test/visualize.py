@@ -33,7 +33,7 @@ GTDIR = "../SeeTrough/gigaJS/testOut/"
 NOISEDIR = "../SeeTrough/gigaJS/testIn/"
 
 # GTDIR = "../SeeTrough/undersample/testOut/"
-# NOISEDIR = "../SeeTrough/undersample/240_testIn/"
+# NOISEDIR = "../SeeTrough/undersample/120_testIn/"
 
 def pred_image(image, model = MODEL):
         model.eval()
@@ -69,7 +69,10 @@ def visualize_image(num = NUM):
         noise = np.load(NOISEDIR + img[i])
 
         pred = pred_image(noise, MODEL)
-
+        # pred = (pred - np.min(pred)) / (np.max(pred) - np.min(pred)) * 255
+        print(np.min(pred))
+        print(np.max(pred))
+                                        
         #mse_noise = mean_squared_error(gt, noise)
         #mse_pred = mean_squared_error(gt, pred)
 
@@ -88,7 +91,7 @@ def visualize_image(num = NUM):
           axs[0].set_title(img[i])  
           axs[1].imshow(noise, cmap = 'gray')
           axs[1].set_title("ssim: %f" %ssim_noise)
-          axs[2].imshow(pred, cmap = 'gray')
+          axs[2].imshow(pred, cmap = 'gray', vmin=0, vmax=255)
           axs[2].set_title("ssim: %f" %ssim_pred)
         
 

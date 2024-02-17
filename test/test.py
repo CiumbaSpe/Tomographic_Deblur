@@ -26,7 +26,7 @@ sys.path.insert(0, '../2d')
 
 CHECKPOINT = "weights/first_seetrough.pth.tar" # default value
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-MODEL = UNET_2d_noSkip(in_channels=1, out_channels=1).to(DEVICE) 
+MODEL = FullResUnet2d(in_channels=1, out_channels=1).to(DEVICE) 
 
 # cosa vuoi testare
 GTDIR = "../SeeTrough/gigaJS/testOut/"
