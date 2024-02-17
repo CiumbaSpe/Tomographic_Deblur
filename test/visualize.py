@@ -12,6 +12,9 @@ sys.path.insert(0, '../3d')
 sys.path.insert(0, '../2d')
 
 from model import UNET_2d
+from model import UNET_2d_noSkip
+from better_model import ResUnet2d
+from better_model import FullResUnet2d
 # from model import UNET_3d
 from utils.utils import (
     load_checkpoint
@@ -20,15 +23,17 @@ from utils.utils import (
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 CHECKPOINT = "weights/first_seetrough.pth.tar" # default
-MODEL = UNET_2d(in_channels=1, out_channels=1).to(DEVICE) 
+MODEL = UNET_2d_noSkip(in_channels=1, out_channels=1).to(DEVICE) 
 
 NUM = 3 # default number of image to show
 COLUMN = 3
 
 # test data dir
-GTDIR = "../SeeTrough/undersample/testOut/"
-NOISEDIR = "../SeeTrough/undersample/120_testIn/"
+GTDIR = "../SeeTrough/gigaJS/testOut/"
+NOISEDIR = "../SeeTrough/gigaJS/testIn/"
 
+# GTDIR = "../SeeTrough/undersample/testOut/"
+# NOISEDIR = "../SeeTrough/undersample/240_testIn/"
 
 def pred_image(image, model = MODEL):
         model.eval()
@@ -42,7 +47,16 @@ def pred_image(image, model = MODEL):
 
 def visualize_image(num = NUM):
     # pick n images and store in img[]
-    img = random.sample(os.listdir(GTDIR), num)
+    #img = random.sample(os.listdir(GTDIR), num)
+
+    a = sorted(os.listdir(GTDIR))
+    img = []
+
+    if(num == 1):
+        img.append(a[300])
+    if(num == 2):
+        img.append(a[300])
+        img.append(a[500])
 
     fig, axs = plt.subplots(num, COLUMN, figsize=(20,10))
 

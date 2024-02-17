@@ -5,7 +5,15 @@ import sys
 from sklearn.metrics import mean_squared_error
 from skimage.metrics import structural_similarity as ssim
 from skimage.metrics import peak_signal_noise_ratio as psnr
+
+sys.path.insert(0, '../')
+sys.path.insert(0, '../3d')
+sys.path.insert(0, '../2d')
+
 from model import UNET_2d
+from model import UNET_2d_noSkip
+from better_model import ResUnet2d
+from better_model import FullResUnet2d
 # from model import UNET_3d
 from utils.utils import (
     load_checkpoint
@@ -18,12 +26,14 @@ sys.path.insert(0, '../2d')
 
 CHECKPOINT = "weights/first_seetrough.pth.tar" # default value
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-MODEL = UNET_2d(in_channels=1, out_channels=1).to(DEVICE) 
+MODEL = UNET_2d_noSkip(in_channels=1, out_channels=1).to(DEVICE) 
 
 # cosa vuoi testare
+GTDIR = "../SeeTrough/gigaJS/testOut/"
+NOISEDIR = "../SeeTrough/gigaJS/testIn/"
 
-GTDIR = "./SeeTrough/gigadose/testOut/"
-NOISEDIR = "./SeeTrough/gigadose/testIn/"
+# GTDIR = "../SeeTrough/undersample/testOut/"
+# NOISEDIR = "../SeeTrough/undersample/240_testIn/"
 
 def pred_image(image, model):
         model.eval()

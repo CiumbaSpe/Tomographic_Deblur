@@ -14,21 +14,6 @@ class DoubleConv(nn.Module):
 
     def forward(self, x):
         return self.conv(x)
-    
-class TripleConv(nn.Module):
-    def __init__(self, in_channels, out_channels):
-        super(TripleConv, self).__init__()
-        self.conv = nn.Sequential(
-            nn.Conv2d(in_channels, out_channels, 3, 1, 1, bias = False),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(out_channels, out_channels, 3, 1, 1, bias = False),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(out_channels, out_channels, 3, 1, 1, bias = False),
-            nn.ReLU(inplace=True),
-        )
-
-    def forward(self, x):
-        return self.conv(x)
 
 class DoubleConvRes(nn.Module):
     def __init__(self, in_channels, out_channels):
