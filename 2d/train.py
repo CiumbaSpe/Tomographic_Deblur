@@ -27,9 +27,15 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = 4
 NUM_EPOCHS = 50
 NUM_WORKERS = 1
+<<<<<<< Updated upstream
 TRAIN_DIR_X = '../SeeTrough/gigadose/JTS/trainIn'
 TRAIN_DIR_Y = '../SeeTrough/gigadose/JTS/trainOut'
 TRAIN_NAME = "brooo"
+=======
+TRAIN_DIR_X = '../SeeTrough/undersample/JTS/120_trainIn'
+TRAIN_DIR_Y = '../SeeTrough/undersample/JTS/trainOut'
+TRAIN_NAME = "120_unet"
+>>>>>>> Stashed changes
 DIMENSION = '2d'
 MODEL = UNET_2d_noSkip(in_channels=1, out_channels=1).to(DEVICE)
 
