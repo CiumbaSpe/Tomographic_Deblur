@@ -247,7 +247,7 @@ class FullResUnet2d(nn.Module):
 
 
         x = self.final_conv(x)
-        m = nn.ReLU()
+        m = nn.Tanh()
         x = m(x)
 
         #ritorno input sommato all'output

@@ -123,8 +123,8 @@ class UNET_2d_noSkip(nn.Module):
             x = self.ups[idx+1](concat_skip)
 
         x = self.final_conv(x)
-        # m = nn.ReLU()
-        # x = m(x)
+        m = nn.Tanh()
+        x = m(x)
 
         #ritorno input sommato all'output
         #return save_input + x
