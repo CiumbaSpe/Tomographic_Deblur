@@ -1,6 +1,10 @@
 import torch
 import torch.nn as nn
-import torchvision.transforms.functional as TF
+# import torchvision.transforms.functional as TF
+# from torch_receptive_field import receptive_field
+# from torchscan import summary
+from torchsummary import summary
+
 
 class DoubleConv(nn.Module):
     def __init__(self, in_channels, out_channels):
@@ -68,6 +72,66 @@ class ResUnet3d(nn.Module):
         #ritorno input sommato all'output
         return x + save_input
 
+class prova(nn.Module):
+    def __init__(
+            self, in_channels=1, out_channels=1,
+    ):
+        super(prova, self).__init__()
+        self.conv1 = nn.Sequential(
+            nn.Conv3d(1, 64, 3, 1, 1, bias=False),
+            nn.ReLU(inplace=True),
+            nn.Conv3d(64, 64, 3, 1, 1, bias=False),
+            nn.ReLU(inplace=True),
+        )
+        self.pool = nn.MaxPool3d(kernel_size=2, stride=2)
+        self.conv2 = nn.Sequential(
+            nn.Conv3d(64, 128, 3, 1, 1, bias=False),
+            nn.ReLU(inplace=True),
+            nn.Conv3d(128, 128, 3, 1, 1, bias=False),
+            nn.ReLU(inplace=True),
+        )
+        self.conv = nn.Sequential(
+            nn.Conv3d(128, 128, 3, 1, 1, bias=False),
+            nn.ReLU(inplace=True),
+            nn.Conv3d(128, 128, 3, 1, 1, bias=False),
+            nn.ReLU(inplace=True),
+        )
+        self.up = nn.ConvTranspose3d(
+            128, 64, kernel_size=2, stride=2,
+        )
+        self.conv3 = nn.Sequential(
+            nn.Conv3d(64, 64, 3, 1, 1, bias=False),
+            nn.ReLU(inplace=True),
+            nn.Conv3d(64, 64, 3, 1, 1, bias=False),
+            nn.ReLU(inplace=True),
+        )
+        self.final_conv = nn.Conv3d(64, 1, kernel_size=1)
+
+        
+    def forward(self, x):
+        print("pre conv1")
+        conv1 = self.conv1(x)
+        x = self.pool(conv1)
+        
+        x = self.conv2(x)
+        x = self.conv(x)
+
+
+        x = self.up(x)        
+        # x = torch.cat([x, conv1], dim=1)
+        
+        x = self.conv3(x)
+        # x = self.conv3(x)
+        # x = self.conv3(x)
+
+
+        print("pre conv1")
+
+        out = self.final_conv(x)
+
+        return out
+
+
 def get_n_params(model):
     pp=0
     for p in list(model.parameters()):
@@ -78,15 +142,20 @@ def get_n_params(model):
     return pp
 
 def test():
-    x = torch.randn((1, 1, 4, 836, 836))
+    # x = torch.randn((1, 1, 4, 836, 836))
     model = ResUnet3d(in_channels=1, out_channels=1)
-    preds = model(x)
-    print(preds.shape)
-    print(x.shape)
+    # preds = model(x)
+    summary(model, (1, 4, 836, 836))
+    # model.eval()
+    # receptive_field_dict = receptive_field(model, (1, 4, 836, 836))
+    # summary(model,  (1, 4, 836, 836), receptive_field=True, max_depth=0)
+    #receptive_field_for_unit(receptive_field_dict, "2", (1,1))
+    #print(preds.shape)
+    #print(x.shape)
     
-    print(get_n_params(model))
+    #print(get_n_params(model))
 
-    assert preds.shape == x.shape
+    #assert preds.shape == x.shape
 
 if __name__ == "__main__":
     test()
