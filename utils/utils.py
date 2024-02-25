@@ -26,10 +26,10 @@ def get_loaders(
     batch_size,
     # train_transform,
     # val_transform,
+    shuffle=True,
     num_workers=1,
     pin_memory=True,
 ):
-    shuffle = True
     if(dimension == '2D' or dimension == '2d'):
         train_ds = SeeTrough2d(
             img_dir_x=train_x,
@@ -42,7 +42,7 @@ def get_loaders(
             img_dir_y=train_y,
             # transform=train_transform,
         )
-        shuffle = True
+    print("shuffle: ", shuffle)
 
     train_loader = DataLoader(
         train_ds,

@@ -3,7 +3,7 @@ import torch.nn as nn
 # import torchvision.transforms.functional as TF
 # from torch_receptive_field import receptive_field
 # from torchscan import summary
-from torchsummary import summary
+#from torchsummary import summary
 
 
 class DoubleConv(nn.Module):
@@ -66,11 +66,13 @@ class ResUnet3d(nn.Module):
             x = self.ups[idx+1](concat_skip)
 
         x = self.final_conv(x)
+        
         m = nn.Tanh()
         x = m(x)
 
+        x = x+save_input
         #ritorno input sommato all'output
-        return x + save_input
+        return x 
 
 class prova(nn.Module):
     def __init__(

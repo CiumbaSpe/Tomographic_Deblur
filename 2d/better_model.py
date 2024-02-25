@@ -185,11 +185,13 @@ class ResUnet2d(nn.Module):
 
 
         x = self.final_conv(x)
+        
         m = nn.Tanh()
         x = m(x)
 
+        x = x + save_input
         #ritorno input sommato all'output
-        return x + save_input
+        return x 
 
 class FullResUnet2d(nn.Module):
     def __init__(

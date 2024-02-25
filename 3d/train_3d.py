@@ -20,11 +20,11 @@ from utils.utils import (
 LEARNING_RATE = 1e-4
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = 1
-NUM_EPOCHS = 15
+NUM_EPOCHS = 20
 NUM_WORKERS = 1
-TRAIN_DIR_X = '../SeeTrough/undersample_big/trainIn'
-TRAIN_DIR_Y = '../SeeTrough/undersample_big/trainOut'
-TRAIN_NAME = "240_big"
+TRAIN_DIR_X = '../SeeTrough/superdose/trainIn'
+TRAIN_DIR_Y = '../SeeTrough/superdose/trainOut'
+TRAIN_NAME = "superJTS"
 DIMENSION = '3d'
 # VAL_DIR_X = 'new_mayo/FBPB/mayo_val/'
 # VAL_DIR_Y = 'new_mayo/GT/mayo_val/' 
@@ -95,6 +95,7 @@ def main():
         print(f"epoch: ({epoch})")
         average_loss = train(train_loader, model, optimizer, loss_fn, scaler)
         save_loss = np.append(save_loss, average_loss)
+        print("average_loss: ", average_loss)
 
     np.save(TRAIN_NAME, save_loss)
 

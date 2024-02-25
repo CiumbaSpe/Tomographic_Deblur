@@ -27,14 +27,21 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = 4
 NUM_EPOCHS = 100
 NUM_WORKERS = 1
-TRAIN_DIR_X = '../SeeTrough/gigadose/JTS_val/trainIn'
-TRAIN_DIR_Y = '../SeeTrough/gigadose/JTS_val/trainOut'
-TRAIN_NAME = "val_giga_fullRes_100"
-DIMENSION = '2d'
-MODEL = FullResUnet2d(in_channels=1, out_channels=1).to(DEVICE)
+TRAIN_DIR_X = '../SeeTrough/gigadose/tryToFit/trainIn'
+TRAIN_DIR_Y = '../SeeTrough/gigadose/tryToFit/trainOut'
 
-VAL_DIR_X = '../SeeTrough/gigadose/JTS_val/val_x'
-VAL_DIR_Y = '../SeeTrough/gigadose/JTS_val/val_y' 
+#TRAIN_DIR_X = '../SeeTrough/undersample/JTS/240_trainIn'
+#TRAIN_DIR_Y = '../SeeTrough/undersample/JTS/trainOut'
+
+TRAIN_NAME = "tryToFit"
+DIMENSION = '2d'
+MODEL = ResUnet2d(in_channels=1, out_channels=1).to(DEVICE)
+
+VAL_DIR_X = '../SeeTrough/gigadose/tryToFit/testIn'
+VAL_DIR_Y = '../SeeTrough/gigadose/tryToFit/testOut' 
+
+#VAL_DIR_X = '../SeeTrough/undersample/JTS/240_testIn'
+#VAL_DIR_Y = '../SeeTrough/undersample/JTS/testOut' 
 
 # TRAIN
 
@@ -93,6 +100,7 @@ def main():
     
     print(DEVICE)
     print(TRAIN_NAME)
+    print(MODEL)
     # This flag allows you to enable the inbuilt cudnn auto-tuner to find the best algorithm to use for your hardware.
     torch.backends.cudnn.benchmark =  True
     torch.backends.cudnn.enabled =  True

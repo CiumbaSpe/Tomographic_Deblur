@@ -14,14 +14,16 @@ sys.path.insert(0, '../2d')
 
 from pydicom.dataset import Dataset
 from model import UNET_2d
+from model import UNET_2d_noSkip
 from better_model import ResUnet2d
+from better_model import FullResUnet2d
 import torch
 from utils.utils import (
     load_checkpoint
 )
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-MODEL = ResUnet2d(in_channels=1, out_channels=1).to(DEVICE) 
+MODEL = FullResUnet2d(in_channels=1, out_channels=1).to(DEVICE) 
 
 
 def pred_image(image, model = MODEL):
@@ -64,7 +66,7 @@ def main():
 
     megaOutput = np.stack(output)
     # normalize 0-255
-    megaOutput = (megaOutput - np.max(megaOutput)) / (np.max(megaOutput) - np.min(megaOutput)) * 255    
+    megaOutput = (megaOutput - np.max(megaOutput)) / (np.max(megaOutput) - np.min(megaOutput)) * 4095    
     
 
     # Create a new DICOM dataset
@@ -83,11 +85,12 @@ def main():
     # Set image-related DICOM attributes
     dataset.Rows = megaOutput.shape[1]
     dataset.Columns = megaOutput.shape[2]
-    dataset.BitsAllocated = 8
+    dataset.BitsAllocated = 16
+    dataset.PixelSpacing = [0.12, 0.12]
     dataset.SamplesPerPixel = 1
     dataset.NumberOfFrames = megaOutput.shape[0]
-    dataset.PixelData = megaOutput.astype(np.uint8).tobytes()
- 
+    dataset.PixelData = megaOutput.astype(np.uint16).tobytes()
+    
     # Save the DICOM dataset to a file
     filename = sys.argv[3]
     pydicom.filewriter.write_file(filename, dataset)

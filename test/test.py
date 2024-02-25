@@ -26,14 +26,13 @@ sys.path.insert(0, '../2d')
 
 CHECKPOINT = "weights/first_seetrough.pth.tar" # default value
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-MODEL = FullResUnet2d(in_channels=1, out_channels=1).to(DEVICE) 
-
+MODEL = ResUnet2d(in_channels=1, out_channels=1).to(DEVICE) 
 # cosa vuoi testare
-GTDIR = "../SeeTrough/gigaJS/testOut/"
-NOISEDIR = "../SeeTrough/gigaJS/testIn/"
+GTDIR = "../SeeTrough/gigadose/JTS/testOut/"
+NOISEDIR = "../SeeTrough/gigadose/JTS/testIn/"
 
-# GTDIR = "../SeeTrough/undersample/testOut/"
-# NOISEDIR = "../SeeTrough/undersample/240_testIn/"
+#GTDIR = "../SeeTrough/undersample/JTS/testOut/"
+#NOISEDIR = "../SeeTrough/undersample/JTS/240_testIn/"
 
 def pred_image(image, model):
         model.eval()
@@ -55,21 +54,23 @@ def test(model):
     ssim_pred = 0
 
     n = len(os.listdir(GTDIR))
-
-    for i in os.listdir(GTDIR):
-        gt = np.load(GTDIR + i)
-        noise = np.load(NOISEDIR + i)
+    
+    cont = 0
+    for i in sorted(os.listdir(GTDIR)):
+        if (cont >= 21 or cont <= 839):
+            gt = np.load(GTDIR + i)
+            noise = np.load(NOISEDIR + i)
         
-        mse_corrupted += mean_squared_error(gt, noise)
-        psnr_corrupted += psnr(gt, noise)
-        ssim_corrupted += ssim(gt, noise, data_range=noise.max() - noise.min())
+            mse_corrupted += mean_squared_error(gt, noise)
+            psnr_corrupted += psnr(gt, noise)
+            ssim_corrupted += ssim(gt, noise, data_range=noise.max() - noise.min())
 
-        preds = pred_image(noise, model)
+            preds = pred_image(noise, model)
 
-        mse_pred += mean_squared_error(gt, preds)
-        psnr_pred += psnr(gt, preds)
-        ssim_pred += ssim(gt, preds, data_range=preds.max() - preds.min())
-
+            mse_pred += mean_squared_error(gt, preds)
+            psnr_pred += psnr(gt, preds)
+            ssim_pred += ssim(gt, preds, data_range=preds.max() - preds.min())
+        cont = cont + 1
 
 
     print("average mse for corrupted images in dataset " + NOISEDIR + "\n", mse_corrupted/n)

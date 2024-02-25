@@ -61,6 +61,7 @@ def main():
         sys.argv[2],
         sys.argv[2],
         BATCH_SIZE,
+        shuffle=False
     )
 
     loop = tqdm(loader) 

@@ -25,13 +25,13 @@ from utils.utils import (
 LEARNING_RATE = 1e-4
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = 4
-NUM_EPOCHS = 20
+NUM_EPOCHS = 2
 NUM_WORKERS = 1
-TRAIN_DIR_X = '../SeeTrough/undersample/JTS/240_trainIn'
-TRAIN_DIR_Y = '../SeeTrough/undersample/JTS/trainOut'
-TRAIN_NAME = "240_res"
+TRAIN_DIR_X = '../SeeTrough/gigadose/JTS/trainIn'
+TRAIN_DIR_Y = '../SeeTrough/gigadose/JTS/trainOut'
+TRAIN_NAME = "giga_unet"
 DIMENSION = '2d'
-MODEL = ResUnet2d(in_channels=1, out_channels=1).to(DEVICE)
+MODEL = FullResUnet2d(in_channels=1, out_channels=1).to(DEVICE)
 
 # VAL_DIR_X = 'new_mayo/FBPB/mayo_val/'
 # VAL_DIR_Y = 'new_mayo/GT/mayo_val/' 
