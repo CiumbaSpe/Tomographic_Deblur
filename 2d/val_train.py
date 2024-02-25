@@ -80,7 +80,8 @@ def train(loader, val_loader, model, optimizer, loss_fn, scaler):
     model.eval()
     cont_val = 0
     loss_sum = 0
-    for idx, (x, y) in enumerate(val_loader):
+    loop1 = tqdm(val_loader)
+    for idx, (x, y) in enumerate(loop1):
         x = torch.unsqueeze(x, 1).to(device = DEVICE)
         y = torch.unsqueeze(y, 1).to(device = DEVICE)
     
