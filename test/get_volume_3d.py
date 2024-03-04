@@ -1,5 +1,4 @@
 # prende input [rete] [dataset] [nome_file_output.dcm]
-# data una rete e un file .dcm ritorna in output
 
 import sys
 import os
