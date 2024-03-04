@@ -22,7 +22,7 @@ from utils.utils import (
 
 # HYPERPARAMETERS
 
-LEARNING_RATE = 1e-4
+LEARNING_RATE = 1e-3
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = 4
 NUM_EPOCHS = 100
@@ -33,7 +33,7 @@ TRAIN_DIR_Y = '../SeeTrough/gigadose/tryToFit/trainOut'
 #TRAIN_DIR_X = '../SeeTrough/undersample/JTS/240_trainIn'
 #TRAIN_DIR_Y = '../SeeTrough/undersample/JTS/trainOut'
 
-TRAIN_NAME = "tryToFit"
+TRAIN_NAME = "tryToFit_1e3"
 DIMENSION = '2d'
 MODEL = ResUnet2d(in_channels=1, out_channels=1).to(DEVICE)
 
