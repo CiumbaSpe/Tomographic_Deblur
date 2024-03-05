@@ -70,6 +70,7 @@ class ResUnet3d(nn.Module):
         return x 
 
 
+
 def get_n_params(model):
     pp=0
     for p in list(model.parameters()):
@@ -83,9 +84,7 @@ def test():
     x = torch.randn((1, 1, 4, 836, 836))
     model = ResUnet3d(in_channels=1, out_channels=1)
     preds = model(x)
-   
-    print(preds.shape)
-    print(x.shape)
+    
 
     assert preds.shape == x.shape
 
