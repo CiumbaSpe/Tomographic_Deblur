@@ -1,4 +1,4 @@
-# prende input [rete] [volume_input] [nome_file_output.dcm]
+# prende input [rete] [volume_input] [nome_file_output]
 
 import sys
 import os
@@ -72,8 +72,6 @@ def main():
     # per ogni input passo alla rete e salvo output
     output = []
 
-    cont = 0
-    batch = []
     for i in range(numpy_array.shape[0]):
         if(i + 4 < numpy_array.shape[0]):
                 pred = pred_image(numpy_array[i:i+4, :, :])
@@ -107,7 +105,7 @@ def main():
 
     megaOutput = np.stack(output)
 
-    # normalize 0-255
+    # normalize 0-4095
     megaOutput = (megaOutput - np.min(megaOutput)) / (np.max(megaOutput) - np.min(megaOutput)) * 4095
     megaOutput = np.resize(megaOutput, (920, 836, 836))
 
@@ -155,7 +153,8 @@ def main():
 
  
     # Save the DICOM dataset to a file
-    filename = sys.argv[3]
+    filename = sys.argv[3].split(".")[0] + ".dcm"
+    
     # dataset.PixelData = pixel_array.tostring()
 
     # dataset.save_as('gio.dcm')
